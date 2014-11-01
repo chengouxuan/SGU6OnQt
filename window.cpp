@@ -42,10 +42,15 @@
 #include "window.h"
 
 #include <QtWidgets>
+#include <QMessageBox>
 
 const int IdRole = Qt::UserRole;
 
 Window::Window()
+    : highlightedPosition1Row(-1)
+    , highlightedPosition1Column(-1)
+    , highlightedPosition2Row(-1)
+    , highlightedPosition2Column(-1)
 {
     boardWidget = new BoardWidget;
 
@@ -78,10 +83,63 @@ Window::Window()
     mainLayout->addWidget(boardWidget, 1, 1, 19, 19);
     setLayout(mainLayout);
 
+    boardWidget->setStoneData(this);
+
     setWindowTitle(tr("SGU6"));
+}
+
+StoneData::StoneType Window::stoneTypeAt(int row, int column) {
+    GameLogic::CellType cellType = gameLogic.cellTypeAt(row, column);
+    bool highlighted =
+            (row == highlightedPosition1Row && column == highlightedPosition1Column) ||
+            (row == highlightedPosition2Row && column == highlightedPosition2Column);
+    if (cellType == GameLogic::BlackStone) {
+        if (highlighted) {
+            return StoneData::BlackHighlighted;
+        } else {
+            return StoneData::Black;
+        }
+    }
+    if (cellType == GameLogic::WhiteStone) {
+        if (highlighted) {
+            return StoneData::WhiteHighlighted;
+        } else {
+            return StoneData::White;
+        }
+    }
+    return StoneData::None;
 }
 
 void Window::boardWidgetCellClicked(int i, int j)
 {
-    qDebug() << "cell clicked: " << i << ", " << j << "\n";
+    GameLogic::WhichPlayer player = gameLogic.whichPlayersTurn();
+
+    if (gameLogic.putStone(i, j)) {
+
+        highlightedPosition1Row = highlightedPosition2Row;
+        highlightedPosition1Column = highlightedPosition2Column;
+        highlightedPosition2Row = i;
+        highlightedPosition2Column = j;
+
+        GameLogic::WhichPlayer newPlayer = gameLogic.whichPlayersTurn();
+        if (newPlayer == player) {
+            highlightedPosition1Row = -1;
+            highlightedPosition1Column = -1;
+        }
+
+        boardWidget->repaint();
+
+        GameLogic::WhichPlayer whoWins = gameLogic.whoWins();
+        QMessageBox messageBox;
+        if (whoWins == GameLogic::White) {
+            messageBox.setText(tr("White Wins"));
+            messageBox.exec();
+        } else if (whoWins == GameLogic::Black) {
+            messageBox.setText(tr("Black Wins"));
+            messageBox.exec();
+        } else if (whoWins == GameLogic::Draw) {
+            messageBox.setText(tr("Draw"));
+            messageBox.exec();
+        }
+    }
 }

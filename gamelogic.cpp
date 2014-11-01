@@ -1,8 +1,14 @@
 #include "gamelogic.h"
 #include <vector>
+#include <QDebug>
 
 GameLogic::GameLogic()
 {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            cell[i][j] = NoStone;
+        }
+    }
 }
 
 
@@ -19,16 +25,25 @@ GameLogic::WhichPlayer GameLogic::whichPlayersTurn()
     }
 }
 
+GameLogic::CellType GameLogic::cellTypeAt(int i, int j) {
+    if (0 <= i && i < rows && 0 <= j && j < columns) {
+        return cell[i][j];
+    } else {
+        return NoStone;
+    }
+}
+
 GameLogic::WhichPlayer GameLogic::whoWins()
 {
-
     for (int i = 0; i < rows; ++i) {
         std::vector<CellType> line;
         for (int j = 0; j < columns; ++j) {
             line.push_back(cell[i][j]);
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        return who;
+        if (who != Unknown) {
+            return who;
+        }
     }
 
     for (int j = 0; j < columns; ++j) {
@@ -37,49 +52,64 @@ GameLogic::WhichPlayer GameLogic::whoWins()
             line.push_back(cell[i][j]);
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        return who;
+        if (who != Unknown) {
+            return who;
+        }
     }
 
     for (int i = 0; i < rows; ++i) {
         std::vector<CellType> line;
         int j = 0;
-        while(i + j < rows) {
+        while(i + j < rows && j < columns) {
             line.push_back(cell[i + j][j]);
+            ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        return who;
+        if (who != Unknown) {
+            return who;
+        }
     }
 
     for (int i = 0; i < rows; ++i) {
         std::vector<CellType> line;
         int j = 0;
-        while(0 <= i - j) {
+        while(0 <= i - j && j < columns) {
             line.push_back(cell[i - j][j]);
+            ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        return who;
+        if (who != Unknown) {
+            return who;
+        }
     }
 
     for (int i = 0; i < rows; ++i) {
         std::vector<CellType> line;
         int j = 0;
-        while(i + j < rows) {
+        while(0 <= columns - 1 - j && i + j < rows) {
             line.push_back(cell[i + j][columns - 1 - j]);
+            ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        return who;
+        if (who != Unknown) {
+            return who;
+        }
     }
 
     for (int i = 0; i < rows; ++i) {
         std::vector<CellType> line;
         int j = 0;
-        while(0 <= i - j) {
+        while(0 <= columns - 1 - j && 0 <= i - j) {
             line.push_back(cell[i - j][columns - 1 - j]);
+            ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        return who;
+        if (who != Unknown) {
+            return who;
+        }
     }
 
+    return Unknown;
 }
 
 GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> &line)
@@ -91,6 +121,7 @@ GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> 
     int whiteCount = 0;
     int blackCount = 0;
     for (int i = 0; i < line.size(); ++i) {
+//        qDebug() << (int)line[i] << ", ";
         switch (line[i]) {
         case WhiteStone:
             ++whiteCount;
@@ -99,13 +130,18 @@ GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> 
         case BlackStone:
             ++blackCount;
             whiteCount = 0;
+            break;
         default:
+            whiteCount = 0;
+            blackCount = 0;
             break;
         }
         if (6 <= whiteCount) {
+//            qDebug() << "white\n";
             return White;
         }
         if (6 <= blackCount) {
+//            qDebug() << "black\n";
             return Black;
         }
     }
@@ -113,6 +149,8 @@ GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> 
     if (columns * rows <= stack.size()) {
         return Draw;
     }
+
+//    qDebug() << "no\n";
 
     return Unknown;
 }
@@ -159,6 +197,8 @@ bool GameLogic::putStone(int i, int j) {
     }
     forwardStack = std::stack<cell_position>();
     stack.push(cell_position(i, j));
+
+    return true;
 }
 
 

@@ -54,12 +54,18 @@ BoardWidget::BoardWidget(QWidget *parent)
 
 QSize BoardWidget::minimumSizeHint() const
 {
-    return QSize(100, 100);
+    return QSize(589, 589);
 }
 
 QSize BoardWidget::sizeHint() const
 {
-    return QSize(800, 800);
+    return QSize(589, 589);
+}
+
+
+void BoardWidget::setStoneData(StoneData *stoneData)
+{
+    boardPainter.setStoneData(stoneData);
 }
 
 

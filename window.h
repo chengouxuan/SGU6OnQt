@@ -44,20 +44,30 @@
 #include <QWidget>
 
 #include "gamelogic.h"
+#include "boardpainter.h"
 
 class BoardWidget;
 
-class Window : public QWidget
+class Window : public QWidget, public StoneData
 {
     Q_OBJECT
 
 public:
     Window();
 
+    StoneType stoneTypeAt(int row, int column);
+
 private slots:
     void boardWidgetCellClicked(int i, int j);
 
 private:
+
+    int highlightedPosition1Row;
+    int highlightedPosition2Row;
+
+    int highlightedPosition1Column;
+    int highlightedPosition2Column;
+
     BoardWidget *boardWidget;
 
     GameLogic gameLogic;

@@ -18,10 +18,14 @@ public:
     bool putStone(int i, int j);
     WhichPlayer whichPlayersTurn();
 
-private:
+
     enum CellType {
         WhiteStone, BlackStone, NoStone
     };
+
+    CellType cellTypeAt(int i, int j);
+
+private:
 
     const static int rows = 19;
     const static int columns = 19;

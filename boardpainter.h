@@ -12,7 +12,7 @@ public:
     };
 
 
-    virtual StoneType getStoneTypeAt(int row, int column) = 0;
+    virtual StoneType stoneTypeAt(int row, int column) = 0;
 
 };
 
@@ -24,6 +24,7 @@ public:
 
     void paint(QWidget *widget);
     void setHighlightedCell(int i, int j);
+    void setStoneData(StoneData *stoneData);
 
 private:
 

@@ -21,26 +21,26 @@ void BoardPainter::paint(QWidget *widget)
     int y = 0;
     int resetY = y;
 
-    for (int i = 0; i < numOfColumns; ++i) {
-        for (int j = 0; j < numOfRows; ++j) {
+    for (int col = 0; col < numOfColumns; ++col) {
+        for (int row = 0; row < numOfRows; ++row) {
             int spec = 0;
-            if (i == 0) {
+            if (col == 0) {
                 spec |= CELL_POSITION_SPEC_LEFT;
             }
-            if (i == numOfColumns - 1) {
+            if (col == numOfColumns - 1) {
                 spec |= CELL_POSITION_SPEC_RIGHT;
             }
-            if (j == 0) {
+            if (row == 0) {
                 spec |= CELL_POSITION_SPEC_TOP;
             }
-            if (j == numOfRows - 1) {
+            if (row == numOfRows - 1) {
                 spec |= CELL_POSITION_SPEC_BOTTOM;
             }
             StoneData::StoneType stoneType = StoneData::None;
             if (stoneDataProvider != NULL) {
-                stoneDataProvider->getStoneTypeAt(i, j);
+                stoneType = stoneDataProvider->stoneTypeAt(row, col);
             }
-            bool drawRedCross = (i == highlightedCellRow && j == highlightedCellColumn);
+            bool drawRedCross = (row == highlightedCellRow && col == highlightedCellColumn);
             paintCell(widget, x, y, cellWidth, cellHeight, spec, stoneType, drawRedCross);
             y += cellHeight;
         }
@@ -51,8 +51,12 @@ void BoardPainter::paint(QWidget *widget)
 
 void BoardPainter::setHighlightedCell(int i, int j)
 {
-    highlightedCellRow = j;
-    highlightedCellColumn = i;
+    highlightedCellRow = i;
+    highlightedCellColumn = j;
+}
+
+void BoardPainter::setStoneData(StoneData *stoneData) {
+    stoneDataProvider = stoneData;
 }
 
 void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec,
