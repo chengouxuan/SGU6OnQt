@@ -59,33 +59,9 @@ QSize BoardWidget::minimumSizeHint() const
 
 QSize BoardWidget::sizeHint() const
 {
-    return QSize(400, 200);
+    return QSize(800, 800);
 }
 
-void BoardWidget::setShape(Shape shape)
-{
-    update();
-}
-
-void BoardWidget::setPen(const QPen &pen)
-{
-    update();
-}
-
-void BoardWidget::setBrush(const QBrush &brush)
-{
-    update();
-}
-
-void BoardWidget::setAntialiased(bool antialiased)
-{
-    update();
-}
-
-void BoardWidget::setTransformed(bool transformed)
-{
-    update();
-}
 
 void BoardWidget::paintEvent(QPaintEvent * /* event */)
 {
@@ -112,11 +88,11 @@ void BoardWidget::mouseReleaseEvent(QMouseEvent *event)
 }
 
 void BoardWidget::mouseMoveEvent(QMouseEvent *event) {
-    qDebug() << event->pos().x() << ", " << event->pos().y() << "\n";
+//    qDebug() << event->pos().x() << ", " << event->pos().y() << "\n";
     for (int i = 0; i < 19; ++i) {
         for (int j = 0; j < 19; ++j) {
             if (isInsideCell(i, j, event->pos())) {
-                qDebug() << "highlight: " << i << ", " << j << "\n";
+//                qDebug() << "highlight: " << i << ", " << j << "\n";
                 boardPainter.setHighlightedCell(i, j);
                 repaint();
                 return;
@@ -130,7 +106,7 @@ void BoardWidget::onClicked(const QPoint &point)
     for (int i = 0; i < 19; ++i) {
         for (int j = 0; j < 19; ++j) {
             if (isInsideCell(i, j, point)) {
-//                emit cellClicked(i, j);
+                emit cellClicked(i, j);
                 break;
             }
         }
@@ -143,7 +119,7 @@ bool BoardWidget::isInsideCell(int i, int j, const QPoint &point) {
     int left = w * j;
     int top = h * i;
     QPoint center(left + w / 2, top + h / 2);
-    qDebug() << "cell(" << i << ", " << j << ") center: " << center.x() << ", " << center.y() << "\n";
+//    qDebug() << "cell(" << i << ", " << j << ") center: " << center.x() << ", " << center.y() << "\n";
     int dx = center.x() - point.x();
     int dy = center.y() - point.y();
     if (dx * dx + dy * dy < w * h / 5) {

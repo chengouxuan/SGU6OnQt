@@ -43,6 +43,8 @@
 
 #include <QWidget>
 
+#include "gamelogic.h"
+
 class QCheckBox;
 class QComboBox;
 class QLabel;
@@ -58,27 +60,13 @@ public:
     Window();
 
 private slots:
-    void shapeChanged();
-    void penChanged();
-    void brushChanged();
+    void boardWidgetCellClicked(int i, int j);
 
 private:
     BoardWidget *boardWidget;
-    QLabel *shapeLabel;
-    QLabel *penWidthLabel;
-    QLabel *penStyleLabel;
-    QLabel *penCapLabel;
-    QLabel *penJoinLabel;
-    QLabel *brushStyleLabel;
-    QLabel *otherOptionsLabel;
-    QComboBox *shapeComboBox;
-    QSpinBox *penWidthSpinBox;
-    QComboBox *penStyleComboBox;
-    QComboBox *penCapComboBox;
-    QComboBox *penJoinComboBox;
-    QComboBox *brushStyleComboBox;
-    QCheckBox *antialiasingCheckBox;
-    QCheckBox *transformationsCheckBox;
+
+    GameLogic gameLogic;
+
 };
 
 #endif // WINDOW_H

@@ -46,7 +46,6 @@
 #include <QPixmap>
 #include <QWidget>
 #include "boardpainter.h"
-#include "gamelogic.h"
 
 class BoardWidget : public QWidget
 {
@@ -61,12 +60,8 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
-public slots:
-    void setShape(Shape shape);
-    void setPen(const QPen &pen);
-    void setBrush(const QBrush &brush);
-    void setAntialiased(bool antialiased);
-    void setTransformed(bool transformed);
+Q_SIGNALS:
+    void cellClicked(int i, int j);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -76,8 +71,6 @@ protected:
 
 private:
     BoardPainter boardPainter;
-    GameLogic gameLogic;
-
     QPoint mouseDownPoint;
 
     void onClicked(const QPoint &point);
