@@ -44,7 +44,7 @@
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(basicdrawing);
+    Q_INIT_RESOURCE(sgu6);
 
     QApplication app(argc, argv);
     Window window;

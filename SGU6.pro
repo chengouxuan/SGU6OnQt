@@ -12,7 +12,8 @@ SOURCES       = main.cpp \
                 boardpainter.cpp \
     gamelogic.cpp
 
-RESOURCES     = basicdrawing.qrc
+RESOURCES     = \
+    sgu6.qrc
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/basicdrawing
