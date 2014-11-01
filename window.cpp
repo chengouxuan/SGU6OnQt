@@ -53,7 +53,29 @@ Window::Window()
             this, SLOT(boardWidgetCellClicked(int,int)));
 
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(boardWidget, 0, 0, 1, 1);
+
+    QLabel *columnLabels = new QLabel[19];
+    QLabel *rowLabels = new QLabel[19];
+
+    const char *(columnMarks[19]) = {
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"
+    };
+
+    const char *(rowMarks[19]) = {
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"
+    };
+
+    for (int i = 0; i < 19; ++i) {
+        columnLabels[i].setText(columnMarks[i]);
+        mainLayout->addWidget(&(columnLabels[i]), 0, i + 1, 1, 1, Qt::AlignCenter);
+    }
+
+    for (int i = 0; i < 19; ++i) {
+        rowLabels[i].setText(rowMarks[i]);
+        mainLayout->addWidget(&(rowLabels[i]), 1 + i, 0, 1, 1, Qt::AlignCenter);
+    }
+
+    mainLayout->addWidget(boardWidget, 1, 1, 19, 19);
     setLayout(mainLayout);
 
     setWindowTitle(tr("SGU6"));

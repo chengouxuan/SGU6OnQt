@@ -45,11 +45,6 @@
 
 #include "gamelogic.h"
 
-class QCheckBox;
-class QComboBox;
-class QLabel;
-class QSpinBox;
-
 class BoardWidget;
 
 class Window : public QWidget
