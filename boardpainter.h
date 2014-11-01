@@ -23,13 +23,18 @@ public:
     BoardPainter(StoneData *sd);
 
     void paint(QWidget *widget);
+    void setHighlightedCell(int i, int j);
 
 private:
 
-    void paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec, StoneData::StoneType stoneType);
+    void paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec,
+                   StoneData::StoneType stoneType, bool drawRedCross);
 
     const static int numOfRows = 19;
     const static int numOfColumns = 19;
+
+    int highlightedCellRow;
+    int highlightedCellColumn;
 
     StoneData *stoneDataProvider;
 };

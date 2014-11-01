@@ -7,20 +7,18 @@
 #define CELL_POSITION_SPEC_TOP 4
 #define CELL_POSITION_SPEC_BOTTOM 8
 
-BoardPainter::BoardPainter(StoneData *sd)
+BoardPainter::BoardPainter(StoneData *sd): highlightedCellRow(0), highlightedCellColumn(0)
 {
     stoneDataProvider = sd;
 }
 
 void BoardPainter::paint(QWidget *widget)
 {
-    float margin = 8;
+    int cellWidth = widget->width() / numOfColumns;
+    int x = 0;
 
-    int cellWidth = (widget->width() - margin - margin) / numOfColumns;
-    int x = margin;
-
-    int cellHeight = (widget->height() - margin - margin) / numOfRows;
-    int y = margin;
+    int cellHeight = widget->height() / numOfRows;
+    int y = 0;
     int resetY = y;
 
     for (int i = 0; i < numOfColumns; ++i) {
@@ -42,7 +40,8 @@ void BoardPainter::paint(QWidget *widget)
             if (stoneDataProvider != NULL) {
                 stoneDataProvider->getStoneTypeAt(i, j);
             }
-            paintCell(widget, x, y, cellWidth, cellHeight, spec, stoneType);
+            bool drawRedCross = (i == highlightedCellRow && j == highlightedCellColumn);
+            paintCell(widget, x, y, cellWidth, cellHeight, spec, stoneType, drawRedCross);
             y += cellHeight;
         }
         y = resetY;
@@ -50,7 +49,14 @@ void BoardPainter::paint(QWidget *widget)
     }
 }
 
-void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec, StoneData::StoneType stoneType)
+void BoardPainter::setHighlightedCell(int i, int j)
+{
+    highlightedCellRow = j;
+    highlightedCellColumn = i;
+}
+
+void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec,
+                             StoneData::StoneType stoneType, bool drawRedCross)
 {
 
     QPainter painter(widget);
@@ -147,5 +153,13 @@ void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int heigh
         painter.setBrush(Qt::NoBrush);
         painter.setPen(Qt::green);
         painter.drawEllipse(centerPoint, eclipseRadius, eclipseRadius);
+    }
+
+    if (drawRedCross) {
+        pen.setWidth(2);
+        pen.setColor(Qt::red);
+        painter.setPen(pen);
+        painter.drawLine(centerPoint.x() - 4, centerPoint.y(), centerPoint.x() + 4, centerPoint.y());
+        painter.drawLine(centerPoint.x(), centerPoint.y() - 4, centerPoint.x(), centerPoint.y() + 4);
     }
 }

@@ -3,12 +3,14 @@ QT += widgets
 HEADERS       = \
                 window.h \
                 boardwidget.h \
-    boardpainter.h
+    boardpainter.h \
+    gamelogic.h
 
 SOURCES       = main.cpp \
                 window.cpp \
                 boardwidget.cpp \
-    boardpainter.cpp
+                boardpainter.cpp \
+    gamelogic.cpp
 
 RESOURCES     = basicdrawing.qrc
 

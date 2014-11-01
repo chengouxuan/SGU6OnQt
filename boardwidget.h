@@ -46,6 +46,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include "boardpainter.h"
+#include "gamelogic.h"
 
 class BoardWidget : public QWidget
 {
@@ -69,15 +70,18 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event);
+    void mousePressEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    Shape shape;
-    QPen pen;
-    QBrush brush;
-    bool antialiased;
-    bool transformed;
-    QPixmap pixmap;
     BoardPainter boardPainter;
+    GameLogic gameLogic;
+
+    QPoint mouseDownPoint;
+
+    void onClicked(const QPoint &point);
+    bool isInsideCell(int i, int j, const QPoint &point);
 };
 
 #endif // RENDERAREA_H
