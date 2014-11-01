@@ -1,13 +1,13 @@
-TEMPLATE = app
+QT += widgets
 
-QT += qml quick widgets
+HEADERS       = renderarea.h \
+                window.h
+SOURCES       = main.cpp \
+                renderarea.cpp \
+                window.cpp
+RESOURCES     = basicdrawing.qrc \
+    basicdrawing.qrc
 
-SOURCES += main.cpp
-
-RESOURCES += qml.qrc
-
-# Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
-
-# Default rules for deployment.
-include(deployment.pri)
+# install
+target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/basicdrawing
+INSTALLS += target
