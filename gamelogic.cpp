@@ -1,6 +1,6 @@
 #include "gamelogic.h"
 #include <vector>
-#include <QDebug>
+//#include <QDebug>
 
 GameLogic::GameLogic()
 {
@@ -120,7 +120,7 @@ GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> 
 
     int whiteCount = 0;
     int blackCount = 0;
-    for (int i = 0; i < line.size(); ++i) {
+    for (unsigned int i = 0; i < line.size(); ++i) {
 //        qDebug() << (int)line[i] << ", ";
         switch (line[i]) {
         case WhiteStone:

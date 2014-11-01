@@ -63,9 +63,8 @@ private slots:
 private:
 
     int highlightedPosition1Row;
-    int highlightedPosition2Row;
-
     int highlightedPosition1Column;
+    int highlightedPosition2Row;
     int highlightedPosition2Column;
 
     BoardWidget *boardWidget;

@@ -44,8 +44,6 @@
 #include <QtWidgets>
 #include <QMessageBox>
 
-const int IdRole = Qt::UserRole;
-
 Window::Window()
     : highlightedPosition1Row(-1)
     , highlightedPosition1Column(-1)

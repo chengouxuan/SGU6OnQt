@@ -42,7 +42,7 @@
 
 #include <QPainter>
 #include <QMouseEvent>
-#include <QDebug>
+//#include <QDebug>
 
 BoardWidget::BoardWidget(QWidget *parent)
     : QWidget(parent), boardPainter(NULL)
