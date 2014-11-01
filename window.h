@@ -48,7 +48,7 @@ class QComboBox;
 class QLabel;
 class QSpinBox;
 
-class RenderArea;
+class BoardWidget;
 
 class Window : public QWidget
 {
@@ -63,7 +63,7 @@ private slots:
     void brushChanged();
 
 private:
-    RenderArea *renderArea;
+    BoardWidget *boardWidget;
     QLabel *shapeLabel;
     QLabel *penWidthLabel;
     QLabel *penStyleLabel;

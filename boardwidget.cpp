@@ -38,12 +38,12 @@
 **
 ****************************************************************************/
 
-#include "renderarea.h"
+#include "boardwidget.h"
 
 #include <QPainter>
 
-RenderArea::RenderArea(QWidget *parent)
-    : QWidget(parent)
+BoardWidget::BoardWidget(QWidget *parent)
+    : QWidget(parent), boardPainter(NULL)
 {
     shape = Polygon;
     antialiased = false;
@@ -54,48 +54,51 @@ RenderArea::RenderArea(QWidget *parent)
     setAutoFillBackground(true);
 }
 
-QSize RenderArea::minimumSizeHint() const
+QSize BoardWidget::minimumSizeHint() const
 {
     return QSize(100, 100);
 }
 
-QSize RenderArea::sizeHint() const
+QSize BoardWidget::sizeHint() const
 {
     return QSize(400, 200);
 }
 
-void RenderArea::setShape(Shape shape)
+void BoardWidget::setShape(Shape shape)
 {
     this->shape = shape;
     update();
 }
 
-void RenderArea::setPen(const QPen &pen)
+void BoardWidget::setPen(const QPen &pen)
 {
     this->pen = pen;
     update();
 }
 
-void RenderArea::setBrush(const QBrush &brush)
+void BoardWidget::setBrush(const QBrush &brush)
 {
     this->brush = brush;
     update();
 }
 
-void RenderArea::setAntialiased(bool antialiased)
+void BoardWidget::setAntialiased(bool antialiased)
 {
     this->antialiased = antialiased;
     update();
 }
 
-void RenderArea::setTransformed(bool transformed)
+void BoardWidget::setTransformed(bool transformed)
 {
     this->transformed = transformed;
     update();
 }
 
-void RenderArea::paintEvent(QPaintEvent * /* event */)
+void BoardWidget::paintEvent(QPaintEvent * /* event */)
 {
+    boardPainter.paint(this);
+
+    /*
     static const QPoint points[4] = {
         QPoint(10, 80),
         QPoint(20, 10),
@@ -177,5 +180,5 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setPen(palette().dark().color());
     painter.setBrush(Qt::NoBrush);
-    painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
+    painter.drawRect(QRect(0, 0, width() - 1, height() - 1));*/
 }

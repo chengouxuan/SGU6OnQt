@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "renderarea.h"
+#include "boardwidget.h"
 #include "window.h"
 
 #include <QtWidgets>
@@ -47,22 +47,22 @@ const int IdRole = Qt::UserRole;
 
 Window::Window()
 {
-    renderArea = new RenderArea;
+    boardWidget = new BoardWidget;
 
     shapeComboBox = new QComboBox;
-    shapeComboBox->addItem(tr("Polygon"), RenderArea::Polygon);
-    shapeComboBox->addItem(tr("Rectangle"), RenderArea::Rect);
-    shapeComboBox->addItem(tr("Rounded Rectangle"), RenderArea::RoundedRect);
-    shapeComboBox->addItem(tr("Ellipse"), RenderArea::Ellipse);
-    shapeComboBox->addItem(tr("Pie"), RenderArea::Pie);
-    shapeComboBox->addItem(tr("Chord"), RenderArea::Chord);
-    shapeComboBox->addItem(tr("Path"), RenderArea::Path);
-    shapeComboBox->addItem(tr("Line"), RenderArea::Line);
-    shapeComboBox->addItem(tr("Polyline"), RenderArea::Polyline);
-    shapeComboBox->addItem(tr("Arc"), RenderArea::Arc);
-    shapeComboBox->addItem(tr("Points"), RenderArea::Points);
-    shapeComboBox->addItem(tr("Text"), RenderArea::Text);
-    shapeComboBox->addItem(tr("Pixmap"), RenderArea::Pixmap);
+    shapeComboBox->addItem(tr("Polygon"), BoardWidget::Polygon);
+    shapeComboBox->addItem(tr("Rectangle"), BoardWidget::Rect);
+    shapeComboBox->addItem(tr("Rounded Rectangle"), BoardWidget::RoundedRect);
+    shapeComboBox->addItem(tr("Ellipse"), BoardWidget::Ellipse);
+    shapeComboBox->addItem(tr("Pie"), BoardWidget::Pie);
+    shapeComboBox->addItem(tr("Chord"), BoardWidget::Chord);
+    shapeComboBox->addItem(tr("Path"), BoardWidget::Path);
+    shapeComboBox->addItem(tr("Line"), BoardWidget::Line);
+    shapeComboBox->addItem(tr("Polyline"), BoardWidget::Polyline);
+    shapeComboBox->addItem(tr("Arc"), BoardWidget::Arc);
+    shapeComboBox->addItem(tr("Points"), BoardWidget::Points);
+    shapeComboBox->addItem(tr("Text"), BoardWidget::Text);
+    shapeComboBox->addItem(tr("Pixmap"), BoardWidget::Pixmap);
 
     shapeLabel = new QLabel(tr("&Shape:"));
     shapeLabel->setBuddy(shapeComboBox);
@@ -145,29 +145,30 @@ Window::Window()
     connect(brushStyleComboBox, SIGNAL(activated(int)),
             this, SLOT(brushChanged()));
     connect(antialiasingCheckBox, SIGNAL(toggled(bool)),
-            renderArea, SLOT(setAntialiased(bool)));
+            boardWidget, SLOT(setAntialiased(bool)));
     connect(transformationsCheckBox, SIGNAL(toggled(bool)),
-            renderArea, SLOT(setTransformed(bool)));
+            boardWidget, SLOT(setTransformed(bool)));
 
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->setColumnStretch(0, 1);
-    mainLayout->setColumnStretch(3, 1);
-    mainLayout->addWidget(renderArea, 0, 0, 1, 4);
-    mainLayout->addWidget(shapeLabel, 2, 0, Qt::AlignRight);
-    mainLayout->addWidget(shapeComboBox, 2, 1);
-    mainLayout->addWidget(penWidthLabel, 3, 0, Qt::AlignRight);
-    mainLayout->addWidget(penWidthSpinBox, 3, 1);
-    mainLayout->addWidget(penStyleLabel, 4, 0, Qt::AlignRight);
-    mainLayout->addWidget(penStyleComboBox, 4, 1);
-    mainLayout->addWidget(penCapLabel, 3, 2, Qt::AlignRight);
-    mainLayout->addWidget(penCapComboBox, 3, 3);
-    mainLayout->addWidget(penJoinLabel, 2, 2, Qt::AlignRight);
-    mainLayout->addWidget(penJoinComboBox, 2, 3);
-    mainLayout->addWidget(brushStyleLabel, 4, 2, Qt::AlignRight);
-    mainLayout->addWidget(brushStyleComboBox, 4, 3);
-    mainLayout->addWidget(otherOptionsLabel, 5, 0, Qt::AlignRight);
-    mainLayout->addWidget(antialiasingCheckBox, 5, 1, 1, 1, Qt::AlignRight);
-    mainLayout->addWidget(transformationsCheckBox, 5, 2, 1, 2, Qt::AlignRight);
+//    mainLayout->setColumnStretch(0, 1);
+//    mainLayout->setColumnStretch(3, 1);
+    mainLayout->addWidget(boardWidget, 0, 0, 1, 1);
+//    mainLayout->addWidget(board, 0, 0, 1, 4);
+//    mainLayout->addWidget(shapeLabel, 2, 0, Qt::AlignRight);
+//    mainLayout->addWidget(shapeComboBox, 2, 1);
+//    mainLayout->addWidget(penWidthLabel, 3, 0, Qt::AlignRight);
+//    mainLayout->addWidget(penWidthSpinBox, 3, 1);
+//    mainLayout->addWidget(penStyleLabel, 4, 0, Qt::AlignRight);
+//    mainLayout->addWidget(penStyleComboBox, 4, 1);
+//    mainLayout->addWidget(penCapLabel, 3, 2, Qt::AlignRight);
+//    mainLayout->addWidget(penCapComboBox, 3, 3);
+//    mainLayout->addWidget(penJoinLabel, 2, 2, Qt::AlignRight);
+//    mainLayout->addWidget(penJoinComboBox, 2, 3);
+//    mainLayout->addWidget(brushStyleLabel, 4, 2, Qt::AlignRight);
+//    mainLayout->addWidget(brushStyleComboBox, 4, 3);
+//    mainLayout->addWidget(otherOptionsLabel, 5, 0, Qt::AlignRight);
+//    mainLayout->addWidget(antialiasingCheckBox, 5, 1, 1, 1, Qt::AlignRight);
+//    mainLayout->addWidget(transformationsCheckBox, 5, 2, 1, 2, Qt::AlignRight);
     setLayout(mainLayout);
 
     shapeChanged();
@@ -180,9 +181,9 @@ Window::Window()
 
 void Window::shapeChanged()
 {
-    RenderArea::Shape shape = RenderArea::Shape(shapeComboBox->itemData(
+    BoardWidget::Shape shape = BoardWidget::Shape(shapeComboBox->itemData(
             shapeComboBox->currentIndex(), IdRole).toInt());
-    renderArea->setShape(shape);
+    boardWidget->setShape(shape);
 }
 
 void Window::penChanged()
@@ -195,7 +196,7 @@ void Window::penChanged()
     Qt::PenJoinStyle join = Qt::PenJoinStyle(penJoinComboBox->itemData(
             penJoinComboBox->currentIndex(), IdRole).toInt());
 
-    renderArea->setPen(QPen(Qt::blue, width, style, cap, join));
+    boardWidget->setPen(QPen(Qt::blue, width, style, cap, join));
 }
 
 void Window::brushChanged()
@@ -208,22 +209,22 @@ void Window::brushChanged()
         linearGradient.setColorAt(0.0, Qt::white);
         linearGradient.setColorAt(0.2, Qt::green);
         linearGradient.setColorAt(1.0, Qt::black);
-        renderArea->setBrush(linearGradient);
+        boardWidget->setBrush(linearGradient);
     } else if (style == Qt::RadialGradientPattern) {
         QRadialGradient radialGradient(50, 50, 50, 70, 70);
         radialGradient.setColorAt(0.0, Qt::white);
         radialGradient.setColorAt(0.2, Qt::green);
         radialGradient.setColorAt(1.0, Qt::black);
-        renderArea->setBrush(radialGradient);
+        boardWidget->setBrush(radialGradient);
     } else if (style == Qt::ConicalGradientPattern) {
         QConicalGradient conicalGradient(50, 50, 150);
         conicalGradient.setColorAt(0.0, Qt::white);
         conicalGradient.setColorAt(0.2, Qt::green);
         conicalGradient.setColorAt(1.0, Qt::black);
-        renderArea->setBrush(conicalGradient);
+        boardWidget->setBrush(conicalGradient);
     } else if (style == Qt::TexturePattern) {
-        renderArea->setBrush(QBrush(QPixmap(":/images/brick.png")));
+        boardWidget->setBrush(QBrush(QPixmap(":/images/brick.png")));
     } else {
-        renderArea->setBrush(QBrush(Qt::green, style));
+        boardWidget->setBrush(QBrush(Qt::green, style));
     }
 }

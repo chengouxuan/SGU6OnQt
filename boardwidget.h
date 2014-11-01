@@ -45,8 +45,9 @@
 #include <QPen>
 #include <QPixmap>
 #include <QWidget>
+#include "boardpainter.h"
 
-class RenderArea : public QWidget
+class BoardWidget : public QWidget
 {
     Q_OBJECT
 
@@ -54,7 +55,7 @@ public:
     enum Shape { Line, Points, Polyline, Polygon, Rect, RoundedRect, Ellipse, Arc,
                  Chord, Pie, Path, Text, Pixmap };
 
-    RenderArea(QWidget *parent = 0);
+    BoardWidget(QWidget *parent = 0);
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
@@ -76,6 +77,7 @@ private:
     bool antialiased;
     bool transformed;
     QPixmap pixmap;
+    BoardPainter boardPainter;
 };
 
 #endif // RENDERAREA_H

@@ -1,12 +1,16 @@
 QT += widgets
 
-HEADERS       = renderarea.h \
-                window.h
+HEADERS       = \
+                window.h \
+                boardwidget.h \
+    boardpainter.h
+
 SOURCES       = main.cpp \
-                renderarea.cpp \
-                window.cpp
-RESOURCES     = basicdrawing.qrc \
-    basicdrawing.qrc
+                window.cpp \
+                boardwidget.cpp \
+    boardpainter.cpp
+
+RESOURCES     = basicdrawing.qrc
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/basicdrawing
