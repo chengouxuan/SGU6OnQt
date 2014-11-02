@@ -41,10 +41,37 @@
 #include "window.h"
 
 #include <QApplication>
+#include "aicontroller.h"
+
+#include <QProcess>
+#include <QMessageBox>
+
+static bool callAI = false;
+static QString aiSharedMemoryKey;
+
+void preprocess(int argc, char *argv[])
+{
+    if (argc > 2) {
+        if (QString(argv[1]).compare("--ai") == 0) {
+            callAI = true;
+            aiSharedMemoryKey = argv[2];
+        } else {
+            exit(-1);
+        }
+    }
+}
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(sgu6);
+    preprocess(argc, argv);
+
+    if (callAI) {
+        AIController aiController;
+        return aiController.exec(aiSharedMemoryKey);
+    }
+
+    AIController aiController;
+    aiController.start();
 
     QApplication app(argc, argv);
     Window window;

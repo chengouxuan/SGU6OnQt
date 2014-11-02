@@ -33,15 +33,15 @@ private:
     CellType cell[rows][columns];
     WhichPlayer checkSixStonesConnected(std::vector<CellType> &line);
 
-    struct cell_position {
+    struct CellPositionStruct {
         int i;
         int j;
-        cell_position(): i(0), j(0) {}
-        cell_position(int ii, int jj): i(ii), j(jj) {}
+        CellPositionStruct(): i(0), j(0) {}
+        CellPositionStruct(int ii, int jj): i(ii), j(jj) {}
     };
 
-    std::stack<cell_position> stack;
-    std::stack<cell_position> forwardStack;
+    std::stack<CellPositionStruct> stack;
+    std::stack<CellPositionStruct> forwardStack;
 };
 
 #endif // GAMELOGIC_H

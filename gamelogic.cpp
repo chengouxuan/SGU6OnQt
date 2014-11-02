@@ -163,7 +163,7 @@ int GameLogic::goBack(int n)
         int j = stack.top().j;
         cell[i][j] = NoStone;
         stack.pop();
-        forwardStack.push(cell_position(i, j));
+        forwardStack.push(CellPositionStruct(i, j));
         ++count;
     }
     return count;
@@ -195,8 +195,8 @@ bool GameLogic::putStone(int i, int j) {
     if (who == Black) {
         cell[i][j] = BlackStone;
     }
-    forwardStack = std::stack<cell_position>();
-    stack.push(cell_position(i, j));
+    forwardStack = std::stack<CellPositionStruct>();
+    stack.push(CellPositionStruct(i, j));
 
     return true;
 }
