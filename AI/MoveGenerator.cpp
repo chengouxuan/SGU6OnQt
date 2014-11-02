@@ -33,7 +33,7 @@ void MoveGenerator::GenerateDoubleBlocks(bool isBlack, MGDMoveArray &arr) {
     zone.AddSegmentTable(::GetSegmentTable(!isBlack, 4));
     zone.AddSegmentTable(::GetSegmentTable(!isBlack, 5));
     FOR_EACH(i, zone.Size()) {
-        if(::GetCell(zone.GetPoint(i)) != CELL_TYPE_EMPTY) {
+        if(::GetCell(zone.GetPoint(i)) != CellTypeEmpty) {
             continue;
         }
         ::MakeMove(zone.GetPoint(i), isBlack);
@@ -42,7 +42,7 @@ void MoveGenerator::GenerateDoubleBlocks(bool isBlack, MGDMoveArray &arr) {
         z.AddSegmentTable(::GetSegmentTable(!isBlack, 4));
         z.AddSegmentTable(::GetSegmentTable(!isBlack, 5));
         FOR_EACH(k, z.Size()) {
-            if(::GetCell(z.GetPoint(k)) != CELL_TYPE_EMPTY || zone.GetPoint(i) == z.GetPoint(k)) {
+            if(::GetCell(z.GetPoint(k)) != CellTypeEmpty || zone.GetPoint(i) == z.GetPoint(k)) {
                 continue;
             } else if(arr.Find(zone.GetPoint(i), z.GetPoint(k), isBlack, 0)) {
                 continue;
@@ -58,7 +58,7 @@ void MoveGenerator::GenerateDoubleBlocks(bool isBlack, MGDMoveArray &arr) {
     if(arr.Size() == 0) {
         FOR_EACH(i, zone.Size()) {
             FOR_EACH(k, i) {
-                if(::GetCell(zone.GetPoint(i)) == CELL_TYPE_EMPTY && ::GetCell(zone.GetPoint(k)) == CELL_TYPE_EMPTY) {
+                if(::GetCell(zone.GetPoint(i)) == CellTypeEmpty && ::GetCell(zone.GetPoint(k)) == CellTypeEmpty) {
                     arr.PushBack(zone.GetPoint(i), zone.GetPoint(k), isBlack, 0);
                     return;
                 }
@@ -214,7 +214,7 @@ void MoveGenerator::SingleBlocks(bool isBlack, MGMoveArray &block) {
     FOR_EACH(i, four.Size()) {
         FOR_EACH(k, 6) {
             Point p = four.GetItem(i).GetPoint(k);
-            if(::GetCell(p) == CELL_TYPE_EMPTY && ++cnt.Cnt(p) >= four.Size() + five.Size() && !block.Find(p, isBlack, 0)) {
+            if(::GetCell(p) == CellTypeEmpty && ++cnt.Cnt(p) >= four.Size() + five.Size() && !block.Find(p, isBlack, 0)) {
                 block.PushBack(p, isBlack, 0);
             }
         }
@@ -222,7 +222,7 @@ void MoveGenerator::SingleBlocks(bool isBlack, MGMoveArray &block) {
     FOR_EACH(i, five.Size()) {
         FOR_EACH(k, 6) {
             Point p = five.GetItem(i).GetPoint(k);
-            if(::GetCell(p) == CELL_TYPE_EMPTY && ++cnt.Cnt(p) >= four.Size() + five.Size() && !block.Find(p, isBlack, 0)) {
+            if(::GetCell(p) == CellTypeEmpty && ++cnt.Cnt(p) >= four.Size() + five.Size() && !block.Find(p, isBlack, 0)) {
                 block.PushBack(p, isBlack, 0);
             }
         }
@@ -232,7 +232,7 @@ void MoveGenerator::SingleBlocks(bool isBlack, MGMoveArray &block) {
 void MoveGenerator::SingleByEvals(bool isBlack, int sz, MGMoveArray &arr) {
     arr.Clear();
     FOR_EACH_CELL(r, c) {
-        if(::GetCell(r, c) != CELL_TYPE_EMPTY) {
+        if(::GetCell(r, c) != CellTypeEmpty) {
             continue;
         }
         int scr = MoveEvaluate(r, c, isBlack);
@@ -251,7 +251,7 @@ void MoveGenerator::SingleByEvals(bool isBlack, Zone &zone, int sz, MGMoveArray 
     arr.Clear();
     FOR_EACH(i, zone.Size()) {
         Point p = zone.GetPoint(i);
-        if(::GetCell(p) != CELL_TYPE_EMPTY) {
+        if(::GetCell(p) != CellTypeEmpty) {
             continue;
         }
         int scr = MoveEvaluate(p, isBlack);
@@ -272,7 +272,7 @@ void MoveGenerator::Couple(bool isBlack, Zone &zone, MGMoveArray &prom, int sz, 
         FOR_EACH(k, zone.Size()) {
             Point p = zone.GetPoint(k);
             DMove dm(prom.ItemRef(i).GetPoint(), zone.GetPoint(k), isBlack);
-            if(! dm.IsValid()) {
+            if(!IsValid(dm)) {
                 continue;
             }
             int scr = DMoveEvaluate(dm);
@@ -296,7 +296,7 @@ void MoveGenerator::Couple(bool isBlack, MGMoveArray &prom, int sz, MGDMoveArray
     FOR_EACH(i, prom.Size()) {
         FOR_EACH_CELL(r, c) {
             DMove dm(prom.ItemRef(i).GetPoint(), Point(r, c), isBlack);
-            if(! dm.IsValid()) {
+            if(!IsValid(dm)) {
                 continue;
             }
             int scr = DMoveEvaluate(dm);
@@ -415,7 +415,7 @@ void MoveGenerator::GenerateThreats(bool isBlack, MGDMoveArray &arr) {
     FOR_EACH(i, three.Size()) {
         FOR_EACH(k, 6) {
             Point p = three.GetItem(i).GetPoint(k);
-            if(::GetCell(p) == CELL_TYPE_EMPTY && !threat.Find(p, isBlack, 0)) {
+            if(::GetCell(p) == CellTypeEmpty && !threat.Find(p, isBlack, 0)) {
                 threat.PushBack(p, isBlack, 0);
             }
         }
@@ -431,7 +431,7 @@ void MoveGenerator::GeneratePreBlock(bool isBlack, MGDMoveArray &preBlock) {
     zone.AddSegmentTable(::GetSegmentTable(!isBlack, 3));
     zone.AddSegmentTable(::GetSegmentTable(!isBlack, 2));
     FOR_EACH(i, zone.Size()) {
-        if(::GetCell(zone.GetPoint(i)) == CELL_TYPE_EMPTY) {
+        if(::GetCell(zone.GetPoint(i)) == CellTypeEmpty) {
             arr.PushBack(zone.GetPoint(i), isBlack, 0);
         } else {
             //zone.Remove(zone.GetPoint(i));
@@ -547,7 +547,7 @@ void MoveGenerator::GeneratePreConnect(bool isBlack, MGDMoveArray &con) {
     zone.AddSegmentTable(::GetSegmentTable(isBlack, 1));
     zone.AddSegmentTable(::GetSegmentTable(isBlack, 2));
     FOR_EACH(i, zone.Size()) {
-        if(::GetCell(zone.GetPoint(i)) == CELL_TYPE_EMPTY) {
+        if(::GetCell(zone.GetPoint(i)) == CellTypeEmpty) {
             arr.PushBack(zone.GetPoint(i), isBlack, 0);
         } else {
             //zone.Remove(zone.GetPoint(i));
@@ -564,7 +564,7 @@ void MoveGenerator::GenerateExtremThreats(bool isBlack, MGDMoveArray &arr) {
             FOR_EACH(b, a) {
                 Point p = tab.GetItem(i).GetPoint(a);
                 Point q = tab.GetItem(i).GetPoint(b);
-                if(::GetCell(p) != CELL_TYPE_EMPTY || ::GetCell(q) != CELL_TYPE_EMPTY) {
+                if(::GetCell(p) != CellTypeEmpty || ::GetCell(q) != CellTypeEmpty) {
                     continue;
                 }
                 int scr = DMoveEvaluate(p, q, isBlack);

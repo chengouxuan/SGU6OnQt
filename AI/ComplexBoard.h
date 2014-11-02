@@ -19,7 +19,6 @@
  *
  */
 
-#include "Connect6.h"
 #include "RandTable.h"
 #include "utilities.h"
 #include "SegmentTable.h"
@@ -30,10 +29,10 @@ class MoveStack: private MoveArray {
 public:
     MoveStack() {}
     int Size() {
-        return __super::Size();
+        return MoveArray::Size();
     }
     void Clear() {
-        __super::Clear();
+        MoveArray::Clear();
     }
     void Push(int row, int col, bool isBlack) {
         PushBack(row, col, isBlack);
@@ -45,7 +44,7 @@ public:
         PushBack(m);
     }
     void Pop() {
-        __super::PopBack();
+        MoveArray::PopBack();
     }
     Move Top() {
         return ItemRef(Size() - 1);
@@ -59,7 +58,7 @@ class ComplexBoard {
 public:
     unsigned int _hash;               // 棋盘哈希值 (zobrist 方法)
     unsigned __int64 _checkSum;       // 棋盘校验和 (zobrist 方法)
-    CellType _data[ROW_MAX][COL_MAX]; // 棋盘基本数组
+    CellType _data[RowMax][ColumnMax]; // 棋盘基本数组
     MoveStack _stack;                 // 棋子堆栈
 
     //************************************
@@ -240,17 +239,17 @@ public:
     //************************************
     void NewSearchInit(Board board);
 
-    //************************************
-    // Method:    PrintData
-    // FullName:  ComplexBoard::PrintData
-    // Access:    public 
-    // Returns:   void
-    // Qualifier: 打印棋盘信息
-    //************************************
-    void PrintData() {
-        printf("hash = %08x, checkSum = %016I64x\nBoard\n", _hash, _checkSum);
-        ::PrintBoard(_data);
-    }
+//    //************************************
+//    // Method:    PrintData
+//    // FullName:  ComplexBoard::PrintData
+//    // Access:    public
+//    // Returns:   void
+//    // Qualifier: 打印棋盘信息
+//    //************************************
+//    void PrintData() {
+//        printf("hash = %08x, checkSum = %016I64x\nBoard\n", _hash, _checkSum);
+//        ::PrintBoard(_data);
+//    }
 
     //************************************
     // Method:    Sontes

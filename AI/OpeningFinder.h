@@ -1,8 +1,8 @@
 #pragma once
 
-#include "connect6.h"
 #include <Windows.h>
 #include <vector>
+#include "UtilityTypes.h"
 
 class OpeningFinder {
 public:

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "connect6.h"
 #include <cassert>
+#include "defines.h"
+#include "UtilityTypes.h"
 
 class DPointTable {
-    int _index[ROW_MAX][COL_MAX][ROW_MAX][COL_MAX];
-    DPoint _dPoint[ROW_MAX * COL_MAX * ROW_MAX * COL_MAX];
+    int _index[RowMax][ColumnMax][RowMax][ColumnMax];
+    DPoint _dPoint[RowMax * ColumnMax * RowMax * ColumnMax];
     int _size;
 
 public:

@@ -10,7 +10,6 @@
  *
  */
 
-#include "connect6.h"
 #include "MoveSearcher.h"
 #include "MoveGenerator.h"
 

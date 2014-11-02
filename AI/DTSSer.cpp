@@ -1,6 +1,5 @@
 #include "DTSSer.h"
 #include "Zone.h"
-#include "connect6.h"
 #include "DPointTable.h"
 
 bool DTSSer::GenerateBlocks(DMoveArray &moveArray) {
@@ -15,7 +14,7 @@ bool DTSSer::GenerateBlocks(DMoveArray &moveArray) {
     SegmentTable::Item seg1 = tab1.GetItem(0);
     FOR_EACH(i, 6) {
         Point p1 = seg1.GetPoint(i);
-        if(::GetCell(p1) != CELL_TYPE_EMPTY) {
+        if(::GetCell(p1) != CellTypeEmpty) {
             continue;
         }
         ::MakeMove(p1, !_isBlack);
@@ -28,7 +27,7 @@ bool DTSSer::GenerateBlocks(DMoveArray &moveArray) {
         SegmentTable::Item seg2 = tab2.GetItem(0);
         FOR_EACH(k, 6) {
             Point p2 = seg2.GetPoint(k);
-            if(::GetCell(p2) != CELL_TYPE_EMPTY) {
+            if(::GetCell(p2) != CellTypeEmpty) {
                 continue;
             }
             ::MakeMove(p2, !_isBlack);
@@ -102,7 +101,7 @@ bool DTSSer::DTSS(int depth, bool isIterativeDTSS) {
 
     // conservative DTSS
     FOR_EACH(i, zone[depth].Size()) {
-        if(::GetCell(zone[depth].GetPoint(i)) != CELL_TYPE_EMPTY) {
+        if(::GetCell(zone[depth].GetPoint(i)) != CellTypeEmpty) {
             continue;
         }
 
@@ -115,7 +114,7 @@ bool DTSSer::DTSS(int depth, bool isIterativeDTSS) {
         ::UnmakeLastMove();
 
         FOR_EACH(k, z[depth].Size()) {
-            if(::GetCell(z[depth].GetPoint(k)) != CELL_TYPE_EMPTY) {
+            if(::GetCell(z[depth].GetPoint(k)) != CellTypeEmpty) {
                 continue;
             }
             if(dPoint[depth].IsInTable(zone[depth].GetPoint(i), z[depth].GetPoint(k))) {
@@ -211,11 +210,11 @@ int DTSSer::MakeNMoves(DMoveArray &dMoveArray) {
     int cnt = 0;
     FOR_EACH(i, dMoveArray.Size()) {
         DMove dm = dMoveArray.ItemRef(i);
-        if(::GetCell(dm.GetPoint1()) == CELL_TYPE_EMPTY) {
+        if(::GetCell(dm.GetPoint1()) == CellTypeEmpty) {
             ++cnt;
             ::MakeMove(dm.GetPoint1(), dm._isBlack);
         }
-        if(::GetCell(dm.GetPoint2()) == CELL_TYPE_EMPTY) {
+        if(::GetCell(dm.GetPoint2()) == CellTypeEmpty) {
             ++cnt;
             ::MakeMove(dm.GetPoint2(), dm._isBlack);
         }
@@ -232,7 +231,7 @@ void DTSSer::UnmakeNMoves(int n) {
 void DTSSer::AddEmptyCells(Zone &zone, SegmentTable::Table &tab) {
     FOR_EACH(i, tab.Size()) {
         FOR_EACH(k, 6) {
-            if(tab.GetItem(i).GetCell(k) == CELL_TYPE_EMPTY && !zone.IsInZone(tab.GetItem(i).GetPoint(k))) {
+            if(tab.GetItem(i).GetCell(k) == CellTypeEmpty && !zone.IsInZone(tab.GetItem(i).GetPoint(k))) {
                 zone.AddPoint(tab.GetItem(i).GetPoint(k));
             }
         }

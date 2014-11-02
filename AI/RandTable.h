@@ -3,21 +3,21 @@
 #include <ctime>
 #include <cstdlib>
 #include <cassert>
-#include "Connect6.h"
+#include "defines.h"
 
 class RandTable {
 public:
     static const int _RAND_TABLES = 3;
-    unsigned int _rand32[_RAND_TABLES][ROW_MAX][COL_MAX];
-    unsigned __int64 _rand64[_RAND_TABLES][ROW_MAX][COL_MAX];
+    unsigned int _rand32[_RAND_TABLES][RowMax][ColumnMax];
+    unsigned __int64 _rand64[_RAND_TABLES][RowMax][ColumnMax];
 
     RandTable();
     int TableNo(CellType type) {
         switch(type) {
-            case CELL_TYPE_BLACK: return 0;
-            case CELL_TYPE_WHITE: return 1;
-            case CELL_TYPE_EMPTY: return 2;
-            default: assert(type == CELL_TYPE_NOT_A_CELL); assert(false); return 0;
+            case CellTypeBlack: return 0;
+            case CellTypeWhite: return 1;
+            case CellTypeEmpty: return 2;
+            default: assert(false); return 0;
         }
     }
     unsigned int Rand32(int row, int col, CellType type) {

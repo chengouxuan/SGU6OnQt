@@ -5,26 +5,14 @@
 #include <QStringList>
 #include <QCoreApplication>
 #include <cassert>
+#include <QFile>
+#include "AI/defines.h"
 
 
-
-enum
-{
-    RowMax = 19,
-    ColMax = 19,
-    Infinity = 1000000000
-};
-
-enum CellType
-{
-    CellTypeBlack,
-    CellTypeWhite,
-    CellTypeEmpty
-};
 
 struct SearchDataStruct
 {
-    CellType board[RowMax][ColMax];
+    CellType board[RowMax][ColumnMax];
     bool isBlacksTurn;
     int countOfStones;
     int possibleDepth;
@@ -34,12 +22,12 @@ struct SearchDataStruct
 
 struct SearchResultStruct
 {
-    int _r1, _c1, _r2, _c2;
+    int r1, c1, r2, c2;
 };
 
 enum
 {
-    ParamSizeMax = 1024
+    ParamSizeMax = 1024,
 };
 
 struct RequestDataStruct
@@ -52,7 +40,7 @@ struct RequestDataStruct
 
     union Data {
         SearchDataStruct searchData;
-        int param[PARAM_SIZE_MAX];
+        int param[ParamSizeMax];
     } data;
 };
 
@@ -65,6 +53,11 @@ struct ResponseDataStruct {
 
 struct SharedMemoryStruct
 {
+    bool finishProcessing;
+    union Data {
+        RequestDataStruct request;
+        ResponseDataStruct response;
+    } data;
 };
 
 AIController::AIController(): thread(NULL)
@@ -72,24 +65,38 @@ AIController::AIController(): thread(NULL)
 
 }
 
+void ReInitParams();
 
 int AIController::exec(const QString &sharedMemoryKey)
 {
-    while(1) {}
-
     QSharedMemory sharedMemory(sharedMemoryKey);
 
     if (!sharedMemory.attach()) {
         return -1;
     }
 
-    sharedMemory.lock();
+    ReInitParams();
 
+    while(1) {
 
+        sharedMemory.lock();
 
+        QFile log(QCoreApplication::applicationFilePath() + ".log");
+        log.open(QFile::Append);
 
+//        log << evaluator._evaluations << " evaluations\n";
+//        log << evaluator._transTable._hits << " evaluator hits\n", evaluator._transTable._hits;
+//        log << frame._nodes << " nodes\n";
+//        log << (frame._transTableBlack._hits + frame._transTableWinte._hits) << " hits\n";
+//        log << dtsser._nodes << " dtss nodes\n";
+//        log << (dtsser._transTableBlack._hits + dtsser._transTableWhite._hits) << " dtss hits\n";
+//        log << dtsser._dropedSearches << " dtss dropped searches\n";
+//        lgo << dtsser._idtssSuccesses << " idtss successes\n";
 
-    sharedMemory.unlock();
+        log.close();
+
+        sharedMemory.unlock();
+    }
 
     sharedMemory.detach();
 }

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Connect6.h"
 #include "defines.h"
 #include "utilities.h"
 #include <cassert>
 #include <algorithm>
+#include "UtilityTypes.h"
 
 class SegmentTable {
 public:
@@ -41,8 +41,8 @@ public:
     };
 
     class Table {
-        int _index[ROW_MAX][COL_MAX][4];
-        Item _itemArray[ROW_MAX * COL_MAX * 4];
+        int _index[RowMax][ColumnMax][4];
+        Item _itemArray[RowMax * ColumnMax * 4];
         int _items;
 
     public:
@@ -80,7 +80,7 @@ public:
     private:
         Table(const Table &);
     } _table[7][7]; // access by blacks and whites.
-    Item _segment[ROW_MAX][COL_MAX][4]; // access by row, column and direction.
+    Item _segment[RowMax][ColumnMax][4]; // access by row, column and direction.
 
 private:
 };

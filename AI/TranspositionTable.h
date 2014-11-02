@@ -1,6 +1,5 @@
 #pragma once
 
-#include "connect6.h"
 #include <cassert>
 
 template <typename Item, const int SIZE>

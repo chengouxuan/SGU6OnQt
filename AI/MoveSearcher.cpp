@@ -1,4 +1,4 @@
-#include "Connect6.h"
+
 #include "defines.h"
 #include <cstdlib>
 #include <ctime>
@@ -17,14 +17,15 @@
 
 DWORD SearchThread(LPVOID p) {
     frame.Search(searcher._board, searcher._isBlack);
-    SetEvent(searcher._hEventSearchComplete);
     return 0;
 }
 
+
+
 void MoveSearcher::SearchGoodMoves(Board board, bool isBlack, int moves /* = 2 */) {
     if(moves == 1) {
-        _dMove._r1 = ROW_MAX / 2;
-        _dMove._c1 = COL_MAX / 2;
+        _dMove._r1 = RowMax / 2;
+        _dMove._c1 = ColumnMax / 2;
         return;
     } else if(openingFinder.Find(board, isBlack)) {
         _dMove = openingFinder._dMove;
@@ -33,34 +34,15 @@ void MoveSearcher::SearchGoodMoves(Board board, bool isBlack, int moves /* = 2 *
     // begin the search thread
     _isBlack = isBlack;
     memcpy(_board, board, sizeof(Board));
-    _hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)&SearchThread, NULL, 0, &_threadId);
-    if(_hThread == NULL) {
-        printf("search thread fail\n");
-        exit(1);
-    }
-    SetThreadPriority(_hThread, THREAD_PRIORITY_HIGHEST);
-    printf("thread id = %d\n", _threadId);
-#ifdef _DEBUG
-    if(WAIT_TIMEOUT == WaitForSingleObject(_hEventSearchComplete, INFINITY)) {
-#else
-    if(WAIT_TIMEOUT == WaitForSingleObject(_hEventSearchComplete, _time_limit)) {
-#endif
-        printf("time out\n");
-    } else {
-        printf("search complete\n");
-    }
-    WaitForSingleObject(_hMutexDMove, INFINITY);
-    TerminateThread(_hThread, 0);
-    CloseHandle(_hThread);
-    ReleaseMutex(_hMutexDMove);
+    SearchThread(0);
 }
 
 
 DMove RandomDMove(bool isBlacksTurn) {
     DMove ret;
     do {
-        ret = DMove(rand() % ROW_MAX, rand() % COL_MAX, rand() % ROW_MAX, rand() % COL_MAX, isBlacksTurn);
-    } while(! ret.IsValid());
+        ret = DMove(rand() % RowMax, rand() % ColumnMax, rand() % RowMax, rand() % ColumnMax, isBlacksTurn);
+    } while(!IsValid(ret));
     return ret;
 }
 
@@ -73,7 +55,7 @@ int CountThreats(bool isBlack) {
     SegmentTable::Table &tab = (four.Size() == 0 ? five : four);
     FOR_EACH(k, 6) {
         Point p = tab.GetItem(0).GetPoint(k);
-        if(::GetCell(p) != CELL_TYPE_EMPTY) {
+        if(::GetCell(p) != CellTypeEmpty) {
             continue;
         }
         ::MakeMove(p, isBlack);
@@ -86,49 +68,12 @@ int CountThreats(bool isBlack) {
     return 2;
 }
 
-// read a line of file 'f', and use 'format' to scanf 'p'
-void ReadAParam(FILE *f, const char *format, void *p) {
-    char buf[1024];
-    if(fgets(buf, sizeof(buf), f) == NULL || sscanf(buf, format, p) == EOF) {
-        MessageBox(NULL, TEXT("read a param"), NULL, MB_OK);
-        exit(1);
-    }
-}
-
-void ReInitParams(const char *path) {
-    FILE *f = fopen(path, "r");
-    if(f == NULL) {
-        MessageBox(NULL, TEXT("read params"), NULL, MB_OK);
-        exit(1);
-    }
-    printf("%s opened\n", path);
-
-    ReadAParam(f, "%d", (void *)&frame._depth_limit);
-    printf("%d read\n", frame._depth_limit);
-
-    ReadAParam(f, "%d", (void *)&frame._time_limit);
-    printf("%d read\n", frame._time_limit);
-
-    ReadAParam(f, "%d", (void *)&searcher._time_limit);
-    printf("%d read\n", searcher._time_limit);
-
-    ReadAParam(f, "%d", (void *)&dtsser._dtss_depth);
-    printf("%d read\n", dtsser._dtss_depth);
-
-    ReadAParam(f, "%d", (void *)&dtsser._id_dtss_depth);
-    printf("%d read\n", dtsser._id_dtss_depth);
-
-    fclose(f);
-}
-
-void ReInitShapes(const char *path) {
-    printf("ReInitShapes not implemented. shapes.txt used\n");
-    return;
-    //FILE *f = fopen(path, "r");
-    //if(f == NULL) {
-    //    MessageBox(NULL, TEXT("read shapes"), NULL, MB_OK);
-    //    exit(1);
-    //}
+void ReInitParams() {
+    frame._depth_limit = 7;
+    frame._time_limit = 10000;
+    searcher._time_limit = 20000;
+    dtsser._dtss_depth = 9;
+    dtsser._id_dtss_depth = 5;
 }
 
 int MoveSearcher::_time_limit;

@@ -1,5 +1,4 @@
 #include "Frame.h"
-#include "connect6.h"
 //#include "DMoveArray.h"
 #include "ComplexBoard.h"
 #include "MoveSearcher.h"
@@ -71,14 +70,14 @@ int Frame::NegaMax(bool isBlack, int depth, int lower, int upper) {
     }
     ++_nodes;
     bool isSuccess = false;
-    int maxScore = -INFINITY;
+    int maxScore = -Infinity;
     MGDMoveArray &arr = moveGenerator.Generate(isBlack, depth);
     SortByHistoryScore(arr);
     FOR_EACH(i, arr.Size()) {
         ::MakeDMove(arr.ItemRef(i));
         int score = -NegaMax(!isBlack, depth - 1, -upper, -lower);
         ::UnmakeLastDMove();
-        if(score > maxScore || maxScore == -INFINITY) {
+        if(score > maxScore || maxScore == -Infinity) {
             dm = arr.ItemRef(i);
             maxScore = score;
         }
@@ -104,7 +103,7 @@ bool Frame::FindWinningMove(bool isBlack, DMove &dm) {
         FOR_EACH(i, 6) {
             FOR_EACH(k, i) {
                 Point pi = seg.GetPoint(i), pk = seg.GetPoint(k);
-                if(::GetCell(pi) == CELL_TYPE_EMPTY && ::GetCell(pk) == CELL_TYPE_EMPTY) {
+                if(::GetCell(pi) == CellTypeEmpty && ::GetCell(pk) == CellTypeEmpty) {
                     dm = DMove(pi, pk, isBlack);
                     return true;
                 }
@@ -116,10 +115,10 @@ bool Frame::FindWinningMove(bool isBlack, DMove &dm) {
         SegmentTable::Item seg = five.GetItem(0);
         FOR_EACH(i, 6) {
             Point p = seg.GetPoint(i);
-            if(DMove(dm.GetPoint1(), p, isBlack).IsValid()) {
+            if(IsValid(dm.GetPoint1(), p, isBlack)) {
                 dm = DMove(dm.GetPoint1(), p, isBlack);
                 return true;
-            } else if(DMove(p, dm.GetPoint2(), isBlack).IsValid()) {
+            } else if(IsValid(p, dm.GetPoint2(), isBlack)) {
                 dm = DMove(p, dm.GetPoint2(), isBlack);
                 return true;
             }
@@ -188,11 +187,11 @@ int Frame::IDMTDF(bool isBlack) {
 #else
     while(depth <= _depth_limit && clock() - cl < _time_limit) {
 #endif
-        printf("depth limit = %d\n", depth);
-        int lower = -INFINITY, upper = +INFINITY;
+//        printf("depth limit = %d\n", depth);
+        int lower = -Infinity, upper = +Infinity;
         int guess = g[depth % 2];
         while(lower + step < upper) {
-            printf("lower = %d, upper = %d, guess = %d\n", lower, upper, guess);
+//            printf("lower = %d, upper = %d, guess = %d\n", lower, upper, guess);
             int score = NegaMax(isBlack, depth, guess, guess + 1);
             b = GetTransTable(isBlack).LookUp(0, guess, guess + 1, eval, _dMove);
             assert(b);
@@ -209,7 +208,7 @@ int Frame::IDMTDF(bool isBlack) {
         g[depth % 2] = guess;
         int oldGuess = guess - 1;
         while(lower < upper && oldGuess != guess) {
-            printf("lower = %d, upper = %d, guess = %d\n", lower, upper, guess);
+//            printf("lower = %d, upper = %d, guess = %d\n", lower, upper, guess);
             int score = NegaMax(isBlack, depth, guess, guess + 1);
             b = GetTransTable(isBlack).LookUp(0, guess, guess + 1, eval, _dMove);
             if(score <= guess) {
@@ -222,7 +221,7 @@ int Frame::IDMTDF(bool isBlack) {
         }
         g[depth++ % 2] = guess;
         searcher.SetDMove(_dMove);
-        printf("%d ms\n", clock() - cl);
+//        printf("%d ms\n", clock() - cl);
     }
     return g[1];
 }

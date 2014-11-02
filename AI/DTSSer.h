@@ -12,7 +12,6 @@
  *
  */
 
-#include "Connect6.h"
 #include <vector>
 #include "ComplexBoard.h"
 #include "SegmentTable.h"
@@ -22,25 +21,26 @@
 #include "TranspositionTable.h"
 #include "Array.h"
 
-class DMoveArray: public Array <DMove, ROW_MAX * COL_MAX * ROW_MAX * COL_MAX, DMoveEqual> {
+typedef Array <DMove, RowMax * ColumnMax * RowMax * ColumnMax, DMoveEqual> DMoveArrayBase;
+class DMoveArray: public DMoveArrayBase {
 public:
     void PushBack(const DMove &dm) {
-        __super::PushBack(dm);
+        DMoveArrayBase::PushBack(dm);
     }
     void PushBack(int r1, int c1, int r2, int c2, bool isBlack) {
-        __super::PushBack(DMove(r1, c1, r2, c2, isBlack));
+        DMoveArrayBase::PushBack(DMove(r1, c1, r2, c2, isBlack));
     }
     void PushBack(const Point &p1, const Point &p2, bool isBlack) {
-        __super::PushBack(DMove(p1, p2, isBlack));
+        DMoveArrayBase::PushBack(DMove(p1, p2, isBlack));
     }
     bool Find(const DMove &dm) {
-        return __super::Find(dm);
+        return DMoveArrayBase::Find(dm);
     }
     bool Find(int r1, int c1, int r2, int c2, bool isBlack) {
-        return __super::Find(DMove(r1, c1, r2, c2, isBlack));
+        return DMoveArrayBase::Find(DMove(r1, c1, r2, c2, isBlack));
     }
     bool Find(const Point &p1, const Point &p2, bool isBlack) {
-        return __super::Find(DMove(p1, p2, isBlack));
+        return DMoveArrayBase::Find(DMove(p1, p2, isBlack));
     }
 };
 
@@ -120,14 +120,15 @@ public:
             , _dMove(dm) {}
     };
 
-    class TransTable: public TranspositionTable <Item, 1048583> { // ÷√ªª±Ì
+    typedef TranspositionTable <Item, 1048583> TransTableBase;
+    class TransTable: public TransTableBase { // ÷√ªª±Ì
     public:
         void Enter(bool isDTSSSuccess, const DMove &dm = DMove()) {
-            __super::Enter(Item(isDTSSSuccess ? Item::TYPE_SUCCESS : Item::TYPE_FAIL, ::CheckSum(), dm), ::Hash());
+            TransTableBase::Enter(Item(isDTSSSuccess ? Item::TYPE_SUCCESS : Item::TYPE_FAIL, ::CheckSum(), dm), ::Hash());
         }
         bool LookUp(bool &isDTSSSuccess, DMove &dm) {
             Item item;
-            if(!__super::LookUp(::CheckSum(), ::Hash(), item) || item._type == Item::TYPE_NOT_A_ITEM) {
+            if(!TransTableBase::LookUp(::CheckSum(), ::Hash(), item) || item._type == Item::TYPE_NOT_A_ITEM) {
                 return false;
             }
             dm = item._dMove;

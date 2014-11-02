@@ -4,24 +4,24 @@
 
 bool OpeningFinder::Find(Board board, bool isBlack) {
     Board b;
-    std::fill(b[0], b[ROW_MAX], CELL_TYPE_EMPTY);
-    int midR = ROW_MAX / 2;
-    int midC = COL_MAX / 2;
-    b[ROW_MAX / 2][COL_MAX / 2] = CELL_TYPE_BLACK;
+    std::fill(b[0], b[RowMax], CellTypeEmpty);
+    int midR = RowMax / 2;
+    int midC = ColumnMax / 2;
+    b[RowMax / 2][ColumnMax / 2] = CellTypeBlack;
     if(memcmp(b, board, sizeof(Board)) == 0) {
         _dMove = DMove(midR, midC - 2, midR - 1, midC - 1, isBlack);
         return true;
     }
     int row = -1, col = -1;
     FOR_EACH_CELL(r, c) {
-        if(board[r][c] == CELL_TYPE_BLACK) {
+        if(board[r][c] == CellTypeBlack) {
             if(! (row == -1 && col == -1)) {
                 return false;
             }
             row = r;
             col = c;
         }
-        if(board[r][c] == CELL_TYPE_WHITE) {
+        if(board[r][c] == CellTypeWhite) {
             return false;
         }
     }

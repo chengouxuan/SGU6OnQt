@@ -1,5 +1,4 @@
 #include "utilities.h"
-#include "Connect6.h"
 #include "defines.h"
 #include <cstdio>
 #include <cassert>
@@ -8,7 +7,7 @@ bool IsGameOver(Board board) {
     static int dr[] = {0, -1, -1, 1};
     static int dc[] = {-1, 0, -1, -1};
     FOR_EACH_CELL(row, col) {
-        if(board[row][col] != CELL_TYPE_BLACK && board[row][col] != CELL_TYPE_WHITE) {
+        if(board[row][col] != CellTypeBlack && board[row][col] != CellTypeWhite) {
             continue;
         }
         FOR_EACH(i, 4) {
@@ -19,9 +18,9 @@ bool IsGameOver(Board board) {
             FOR_EACH(d, 6) {
                 int r = row + d * dr[i];
                 int c = col + d * dc[i];
-                if(board[r][c] == CELL_TYPE_BLACK) {
+                if(board[r][c] == CellTypeBlack) {
                     ++blacks;
-                } else if(board[r][c] == CELL_TYPE_WHITE) {
+                } else if(board[r][c] == CellTypeWhite) {
                     ++whites;
                 } else {
                     break;
@@ -48,9 +47,9 @@ void PrintBoard(Board board) {
             printf("\n%02d", r);
         }
         switch(board[r][c]) {
-            case CELL_TYPE_BLACK: printf(" X"); break;
-            case CELL_TYPE_WHITE: printf(" O"); break;
-            case CELL_TYPE_EMPTY: printf(" ."); break;
+            case CellTypeBlack: printf(" X"); break;
+            case CellTypeWhite: printf(" O"); break;
+            case CellTypeEmpty: printf(" ."); break;
 #ifdef _ASSERT_SWITCHES
             default: assert(false);
 #endif;

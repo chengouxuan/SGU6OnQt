@@ -27,7 +27,6 @@
  *
  */
 
-#include "connect6.h"
 #include "ComplexBoard.h"
 #include "HistoryScore.h"
 #include "MoveSearcher.h"
@@ -60,31 +59,32 @@ public:
     }
 };
 
-class MGDMoveArray: public Array <MGDMove, ROW_MAX * COL_MAX * ROW_MAX * COL_MAX, MGDMoveEqual> { // MoveGenerator DMove Array
+typedef Array <MGDMove, RowMax * ColumnMax * RowMax * ColumnMax, MGDMoveEqual> MGDMoveArrayBase;
+class MGDMoveArray: public MGDMoveArrayBase { // MoveGenerator DMove Array
 public:
     void PushBack(const MGDMove &m) {
-        __super::PushBack(m);
+        MGDMoveArrayBase::PushBack(m);
     }
     void PushBack(int r1, int c1, int r2, int c2, bool isBlack, int score) {
-        __super::PushBack(MGDMove(r1, c1, r2, c2, isBlack, score));
+        MGDMoveArrayBase::PushBack(MGDMove(r1, c1, r2, c2, isBlack, score));
     }
     void PushBack(const Point &p1, const Point &p2, bool isBlack, int score) {
-        __super::PushBack(MGDMove(p1, p2, isBlack, score));
+        MGDMoveArrayBase::PushBack(MGDMove(p1, p2, isBlack, score));
     }
     void PushBack(const DMove &dm, int score) {
-        __super::PushBack(MGDMove(dm, score));
+        MGDMoveArrayBase::PushBack(MGDMove(dm, score));
     }
     bool Find(const MGDMove &m) {
-        return __super::Find(m);
+        return MGDMoveArrayBase::Find(m);
     }
     bool Find(int r1, int c1, int r2, int c2, bool isBlack, int score) {
-        return __super::Find(MGDMove(r1, c1, r2, c2, isBlack, score));
+        return MGDMoveArrayBase::Find(MGDMove(r1, c1, r2, c2, isBlack, score));
     }
     bool Find(const Point &p1, const Point &p2, bool isBlack, int score) {
-        return __super::Find(MGDMove(p1, p2, isBlack, score));
+        return MGDMoveArrayBase::Find(MGDMove(p1, p2, isBlack, score));
     }
     bool Find(const DMove &dm, int score) {
-        return __super::Find(MGDMove(dm, score));
+        return MGDMoveArrayBase::Find(MGDMove(dm, score));
     }
     MGDMove &MinScoreRef();
     MGDMove &MaxScoreRef();
@@ -115,25 +115,26 @@ public:
     }
 };
 
-class MGMoveArray: public Array <MGMove, ROW_MAX * COL_MAX, MGMoveEqual> {
+typedef Array <MGMove, RowMax * ColumnMax, MGMoveEqual> MGMoveArrayBase;
+class MGMoveArray: public MGMoveArrayBase {
 public:
     void PushBack(int row, int col, bool isBlack, int score) {
-        __super::PushBack(MGMove(row, col, isBlack, score));
+        MGMoveArrayBase::PushBack(MGMove(row, col, isBlack, score));
     }
     void PushBack(const Point &p, bool isBlack, int score) {
-        __super::PushBack(MGMove(p, isBlack, score));
+        MGMoveArrayBase::PushBack(MGMove(p, isBlack, score));
     }
     void PushBack(const Move &m, int score) {
-        __super::PushBack(MGMove(m, score));
+        MGMoveArrayBase::PushBack(MGMove(m, score));
     }
     bool Find(int row, int col, bool isBlack, int score) {
-        return __super::Find(MGMove(row, col, isBlack, score));
+        return MGMoveArrayBase::Find(MGMove(row, col, isBlack, score));
     }
     bool Find(const Point &p, bool isBlack, int score) {
-        return __super::Find(MGMove(p, isBlack, score));
+        return MGMoveArrayBase::Find(MGMove(p, isBlack, score));
     }
     bool Find(const Move &m, int score) {
-        return __super::Find(MGMove(m, score));
+        return MGMoveArrayBase::Find(MGMove(m, score));
     }
     MGMove &MinScoreRef();
 };

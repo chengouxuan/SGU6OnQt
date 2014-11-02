@@ -10,7 +10,6 @@ HEADERS       = \
     threadrunreimpelement.h \
     AI/Array.h \
     AI/ComplexBoard.h \
-    AI/connect6.h \
     AI/defines.h \
     AI/DPointTable.h \
     AI/DTSSer.h \
@@ -27,24 +26,21 @@ HEADERS       = \
     AI/SegmentTable.h \
     AI/TranspositionTable.h \
     AI/utilities.h \
-    AI/Zone.h
+    AI/Zone.h \
+    AI/UtilityTypes.h
 
 SOURCES       = main.cpp \
                 window.cpp \
                 boardwidget.cpp \
                 boardpainter.cpp \
     gamelogic.cpp \
-    AI/mockai.cpp \
     aicontroller.cpp \
     AI/ComplexBoard.cpp \
-    AI/debugmain.cpp \
     AI/DPointTable.cpp \
     AI/DTSSer.cpp \
     AI/Evaluator.cpp \
     AI/Frame.cpp \
     AI/HistoryScore.cpp \
-    AI/main.cpp \
-    AI/mockai.cpp \
     AI/MoveGenerator.cpp \
     AI/MoveSearcher.cpp \
     AI/OpeningFinder.cpp \

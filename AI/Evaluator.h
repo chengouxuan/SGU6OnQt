@@ -14,7 +14,6 @@
  *
  */
 
-#include "Connect6.h"
 #include "defines.h"
 #include <algorithm>
 #include "TranspositionTable.h"
@@ -42,14 +41,15 @@ public:
             , _eval(eval)
             , _type(TYPE_EVAL) {}
     };
-    class TransTable: public TranspositionTable <Item, 7867687> { // ÷√ªª±Ì
+    typedef TranspositionTable <Item, 7867687> TransTableBase;
+    class TransTable: public TransTableBase { // ÷√ªª±Ì
     public:
         void Enter(int eval) {
-            __super::Enter(Item(::CheckSum(), eval), ::Hash());
+            TransTableBase::Enter(Item(::CheckSum(), eval), ::Hash());
         }
         bool LookUp(int &eval) {
             Item item;
-            if(__super::LookUp(::CheckSum(), ::Hash(), item)) {
+            if(TransTableBase::LookUp(::CheckSum(), ::Hash(), item)) {
                 eval = item._eval;
                 return item._type == Item::TYPE_EVAL;
             }

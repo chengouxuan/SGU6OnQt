@@ -13,7 +13,7 @@ bool RZDefender::Defende(bool isBlack) {
     sing.Clear();
     FOR_EACH(i, zone.Size()) {
         Point p = zone.GetPoint(i);
-        if(::GetCell(p) == CELL_TYPE_EMPTY) {
+        if(::GetCell(p) == CellTypeEmpty) {
             sing.PushBack(p, isBlack, MoveEvaluate(p, isBlack));
         }
     }
@@ -36,7 +36,7 @@ bool RZDefender::Defende(bool isBlack) {
         sec.Clear();
         FOR_EACH(k, zone.Size()) {
             Point p = zone.GetPoint(k);
-            if(::GetCell(p) == CELL_TYPE_EMPTY) {
+            if(::GetCell(p) == CellTypeEmpty) {
                 sec.PushBack(p, isBlack, 0);
             }
         }
@@ -64,7 +64,7 @@ bool RZDefender::Defende(bool isBlack) {
 void RZDefender::EnumSecondMove(const Move &move, MGDMoveArray &arr) {
     arr.Clear();
     FOR_EACH_CELL(r, c) {
-        if(::GetCell(r, c) == CELL_TYPE_EMPTY && Point(r, c) != move.GetPoint()) {
+        if(::GetCell(r, c) == CellTypeEmpty && Point(r, c) != move.GetPoint()) {
             DMove dm(move.GetPoint(), Point(r, c), move._isBlack);
             arr.PushBack(dm, DMoveEvaluate(dm));
         }

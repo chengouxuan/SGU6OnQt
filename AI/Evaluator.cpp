@@ -4,8 +4,6 @@
 #include "utilities.h"
 #include "defines.h"
 #include "movesearcher.h"
-#include "connect6.h"
-//#include "oldevaluator.h"
 
 Evaluator::Evaluator() {
     FILE *file = fopen("Shapes.txt", "r");
@@ -62,13 +60,13 @@ int Evaluator::Evaluate(bool isBlacksTurn) {
         FOR_EACH_COL(col) {
             line[col] = ::GetCell(row, col);
         }
-        score += LineScore(line, COL_MAX);
+        score += LineScore(line, ColumnMax);
     }
     FOR_EACH_COL(col) {
         FOR_EACH_ROW(row) {
             line[row] = ::GetCell(row, col);
         }
-        score += LineScore(line, ROW_MAX);
+        score += LineScore(line, RowMax);
     }
     // ¶Ô½ÇÏß
     FOR_EACH_ROW(row) {
@@ -150,10 +148,10 @@ int Evaluator::LineScore(CellType line[_LINE_LEN_MAX], int len) {
         FOR_EACH(i, len) {
             maskB <<= 1;
             maskW <<= 1;
-            if(line[i] == CELL_TYPE_BLACK) {
+            if(line[i] == CellTypeBlack) {
                 maskB |= 1;
                 lastB = i;
-            } else if(line[i] == CELL_TYPE_WHITE) {
+            } else if(line[i] == CellTypeWhite) {
                 maskW |= 1;
                 lastW = i;
             }

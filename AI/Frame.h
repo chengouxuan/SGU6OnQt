@@ -8,7 +8,6 @@
  *
  */
 
-#include "connect6.h"
 #include "TranspositionTable.h"
 #include "MoveSearcher.h"
 #include "DTSSer.h"
@@ -19,7 +18,7 @@
 class Frame {
 public:
     static /*const*/ int _depth_limit/* = 3*/;        // 搜索最大深度
-    static const int _DTSS_SCORE = INFINITY;  // 双威胁搜索成功分数
+    static const int _DTSS_SCORE = Infinity;  // 双威胁搜索成功分数
     static /*const*/ int _time_limit/* = 10000*/;     // 时间限制, 在未超过该限制和深度限制 _DEPTH_LIMIT 时进入深一层搜索
 
     DMove _dMove; // 最佳着法
@@ -55,14 +54,15 @@ public:
         }
     };
 
-    class TransTable: public TranspositionTable <Item, 1048583> { // 置换表
+    typedef TranspositionTable <Item, 1048583> TransTableBase;
+    class TransTable: public TransTableBase { // 置换表
     public:
         void Enter(int depth, Item::Type type, int eval, const DMove &dm) {
-            __super::Enter(Item(type, eval, depth, ::CheckSum(), dm), ::Hash());
+            TransTableBase::Enter(Item(type, eval, depth, ::CheckSum(), dm), ::Hash());
         }
         bool LookUp(int depth, int lower, int upper, int &eval, DMove &dm) {
             Item item;
-            if(!__super::LookUp(::CheckSum(), ::Hash(), item) || item._type == Item::TYPE_NOT_A_ITEM || item._depth < depth) {
+            if(!TransTableBase::LookUp(::CheckSum(), ::Hash(), item) || item._type == Item::TYPE_NOT_A_ITEM || item._depth < depth) {
                 return false;
             }
             eval = item._eval;
@@ -131,7 +131,7 @@ private:
     //************************************
     bool IsGameOver(bool isBlack, int &eval, DMove &dm) {
         if(FindWinningMove(isBlack, dm)) {
-            eval = +INFINITY;
+            eval = +Infinity;
             return true;
         } else if(dtsser.Search(isBlack, true)) {
             eval = _DTSS_SCORE;

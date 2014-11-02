@@ -11,7 +11,6 @@
  *
  */
 
-#include "Connect6.h"
 #include <cassert>
 #include "defines.h"
 #include "evaluator.h"
@@ -19,38 +18,22 @@
 #include "ComplexBoard.h"
 #include <set>
 #include <queue>
-#include <Windows.h>
+#include <Windows.h>  
 
 // 搜索类
 class MoveSearcher {
 public:
     static /*const*/ int _time_limit/* = 45000*/; // ms
 
-private:
 	// 调用 SearchGoodMoves() 后从这个变量获取着法
     DMove _dMove;
-
-public:
-    HANDLE _hMutexDMove;           // 保护 _dMove, 使得不在搜索线程修改 _dMove 时, 杀死搜索线程.
-    HANDLE _hThread;               // 搜索线程句柄
-    HANDLE _hEventSearchComplete;  // 搜索完成事件
-    DWORD _threadId;               // 搜索线程id
 
     bool _isBlack;                 // 是否
     Board _board;                  // 棋盘
 
-    MoveSearcher() {
-        _hMutexDMove = CreateMutex(NULL, false, TEXT("MoveSearcher::_hMutexDMove"));
-        if(_hMutexDMove == NULL) {
-            printf("create mutex fail\n");
-            exit(1);
-        }
-        _hEventSearchComplete = CreateEvent(NULL, false, false, TEXT("MoveSearcher::_hEventSearchComplete"));
-        if(_hEventSearchComplete == NULL) {
-            printf("create event fail\n");
-            exit(1);
-        }
-    }
+public:
+
+    MoveSearcher() { }
 
 	// 搜索一步棋（一子或二子）;
 	// board:        棋盘数组
@@ -67,9 +50,7 @@ public:
     // Parameter: const DMove & dm 着法
     //************************************
     void SetDMove(const DMove &dm) {
-        WaitForSingleObject(_hMutexDMove, INFINITY);
         _dMove = dm;
-        ReleaseMutex(_hMutexDMove);
     }
 
     //************************************
@@ -80,11 +61,10 @@ public:
     // Qualifier: 调用 SearchGoodMoves() 取得最佳着法
     //************************************
     DMove GetDMove() {
-        WaitForSingleObject(_hMutexDMove, INFINITY);
         DMove dm = _dMove;
-        ReleaseMutex(_hMutexDMove);
         return dm;
     }
+
 };
 
 extern MoveSearcher searcher;
@@ -222,9 +202,9 @@ inline void MakeMove(const Move &move) {
     complexBoard.MakeMove(move);
 }
 
-inline void PrintComplexBoard() {
-    complexBoard.PrintData();
-}
+//inline void PrintComplexBoard() {
+//    complexBoard.PrintData();
+//}
 
 //************************************
 // Method:    GetSegmentTable
@@ -282,3 +262,12 @@ DMove RandomDMove(bool isBlacksTurn);
 // Parameter: bool isBlack 对黑方威胁为 true, 对白方威胁 为false
 //************************************
 int CountThreats(bool isBlack);
+
+
+inline bool IsValid(const Point &p1, const Point &p2, bool isBlack) {
+    return p1 != p2 && ::GetCell(p1) == CellTypeEmpty && ::GetCell(p2) == CellTypeEmpty;
+}
+
+inline bool IsValid(const DMove &dm) {
+    return IsValid(dm.GetPoint1(), dm.GetPoint2(), dm._isBlack);
+}

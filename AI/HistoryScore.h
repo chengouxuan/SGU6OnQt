@@ -1,12 +1,12 @@
 #pragma once
 
-#include "connect6.h"
 #include "utilities.h"
 #include <cassert>
+#include "UtilityTypes.h"
 
 class HistoryScore {
 public:
-    int _score[2][ROW_MAX][COL_MAX][ROW_MAX][COL_MAX];
+    int _score[2][RowMax][ColumnMax][RowMax][ColumnMax];
 
     int TableNo(bool isBlack) {
         return isBlack ? 0 : 1;

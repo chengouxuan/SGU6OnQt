@@ -15,26 +15,26 @@ void ComplexBoard::NewSearchInit(Board board) {
     _hash = 0;
     _checkSum = 0;
     _stack.Clear();
-    std::fill(_data[0], _data[ROW_MAX], CELL_TYPE_EMPTY);
+    std::fill(_data[0], _data[RowMax], CellTypeEmpty);
     FOR_EACH_CELL(r, c) {
-        if(board[r][c] == CELL_TYPE_BLACK) {
+        if(board[r][c] == CellTypeBlack) {
             MakeMove(r, c, true);
-        } else if(board[r][c] == CELL_TYPE_WHITE) {
+        } else if(board[r][c] == CellTypeWhite) {
             MakeMove(r, c, false);
         } else {
-            assert(board[r][c] == CELL_TYPE_EMPTY);
+            assert(board[r][c] == CellTypeEmpty);
         }
     }
 }
 
 void ComplexBoard::MakeMove(int row, int col, bool isBlack) {
     assert(::IsInsideBoard(row, col));
-    assert(_data[row][col] == CELL_TYPE_EMPTY);
+    assert(_data[row][col] == CellTypeEmpty);
 
     _hash ^= ::randTable.Rand32(row, col, _data[row][col]);
     _checkSum ^= ::randTable.Rand64(row, col, _data[row][col]);
 
-    _data[row][col] = (isBlack ? CELL_TYPE_BLACK : CELL_TYPE_WHITE);
+    _data[row][col] = (isBlack ? CellTypeBlack : CellTypeWhite);
 
     _hash ^= ::randTable.Rand32(row, col, _data[row][col]);
     _checkSum ^= ::randTable.Rand64(row, col, _data[row][col]);
@@ -50,12 +50,12 @@ void ComplexBoard::UnmakeLastMove() {
     int row = _stack.Top()._row;
     int col = _stack.Top()._col;
 
-    assert(_data[row][col] != CELL_TYPE_EMPTY);
+    assert(_data[row][col] != CellTypeEmpty);
 
     _hash ^= ::randTable.Rand32(row, col, _data[row][col]);
     _checkSum ^= ::randTable.Rand64(row, col, _data[row][col]);
 
-    _data[row][col] = CELL_TYPE_EMPTY;
+    _data[row][col] = CellTypeEmpty;
 
     _hash ^= ::randTable.Rand32(row, col, _data[row][col]);
     _checkSum ^= ::randTable.Rand64(row, col, _data[row][col]);

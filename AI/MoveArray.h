@@ -1,13 +1,14 @@
 #pragma once
 
-#include "connect6.h"
 #include <cassert>
 #include "Array.h"
 
-class MoveArray: public Array <Move, ROW_MAX * COL_MAX, MoveEqual> {
+
+typedef Array <Move, 19 * 19, MoveEqual> MoveArrayBase;
+class MoveArray: public MoveArrayBase {
 public:
     void PushBack(int row, int col, bool isBlack) {
-        __super::PushBack(Move(row, col, isBlack));
+        MoveArrayBase::PushBack(Move(row, col, isBlack));
     }
     void PushBack(const Point &p, bool isBlack) {
         PushBack(p._row, p._col, isBlack);
@@ -16,7 +17,7 @@ public:
         PushBack(move._row, move._col, move._isBlack);
     }
     bool Find(int row, int col, bool isBlack) {
-        return __super::Find(Move(row, col, isBlack));
+        return MoveArrayBase::Find(Move(row, col, isBlack));
     }
     bool Find(const Move &m) {
         return Find(m._row, m._col, m._isBlack);

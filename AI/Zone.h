@@ -1,13 +1,12 @@
 #pragma once
 
 #include <cassert>
-#include "connect6.h"
 #include "SegmentTable.h"
 
 class Zone {
 public:
-    int _index[ROW_MAX][COL_MAX];
-    Point _pointArray[ROW_MAX * COL_MAX];
+    int _index[RowMax][ColumnMax];
+    Point _pointArray[RowMax * ColumnMax];
     int _points;
 
     Zone(): _points(0) {
