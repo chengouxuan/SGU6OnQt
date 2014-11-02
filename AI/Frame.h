@@ -160,7 +160,7 @@ private:
     void NewSearchInit(Board board) {
         complexBoard.NewSearchInit(board);
         historyScore.Zero();
-        evaluator.ResetCounters();
+        evaluator->ResetCounters();
         dtsser.ResetCounters();
         this->ResetCounters();
     }

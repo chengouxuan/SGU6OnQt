@@ -16,6 +16,9 @@
 #include "OpeningFinder.h"
 
 DWORD SearchThread(LPVOID p) {
+    if (evaluator == NULL) {
+        evaluator = new Evaluator;
+    }
     frame.Search(searcher._board, searcher._isBlack);
     return 0;
 }

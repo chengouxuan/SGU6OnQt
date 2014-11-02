@@ -132,7 +132,7 @@ int Evaluator::Evaluate(bool isBlacksTurn) {
     return score * sign;
 }
 
-Evaluator evaluator;
+Evaluator *evaluator = NULL;
 
 int Evaluator::LineScore(CellType line[_LINE_LEN_MAX], int len) {
     int scr = 0;

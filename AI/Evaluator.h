@@ -96,4 +96,4 @@ private:
     int LineScore(CellType line[_LINE_LEN_MAX], int len);
 };
 
-extern Evaluator evaluator;
+extern Evaluator *evaluator;

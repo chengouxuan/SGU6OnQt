@@ -66,7 +66,7 @@ int Frame::NegaMax(bool isBlack, int depth, int lower, int upper) {
         GetTransTable(isBlack).Enter(_depth_limit, Item::TYPE_SUCCESS, eval, dm);
         return eval;
     } else if(depth <= 0) {
-        return evaluator.Evaluate(isBlack);
+        return evaluator->Evaluate(isBlack);
     }
     ++_nodes;
     bool isSuccess = false;

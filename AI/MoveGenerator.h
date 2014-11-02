@@ -238,7 +238,7 @@ private:
 
     int MoveEvaluate(int row, int col, bool isBlack) {
         ::MakeMove(row, col, isBlack);
-        int ret = evaluator.Evaluate(isBlack);
+        int ret = evaluator->Evaluate(isBlack);
         ::UnmakeLastMove();
         return ret;
     }
@@ -247,7 +247,7 @@ private:
     }
     int DMoveEvaluate(const DMove &dm) {
         ::MakeDMove(dm);
-        int ret = evaluator.Evaluate(dm._isBlack);
+        int ret = evaluator->Evaluate(dm._isBlack);
         ::UnmakeLastDMove();
         return ret;
     }
