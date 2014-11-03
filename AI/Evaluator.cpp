@@ -64,8 +64,8 @@ Evaluator::Evaluator()
 
     memset(_score, 0, sizeof(_score));
 
-    printf("\nscore table:\n");
-    int i = 0;
+//    printf("\nscore table:\n");
+//    int i = 0;
 
     char *lineBegin = shapes;
     char *lineEnd = NULL;
@@ -79,7 +79,7 @@ Evaluator::Evaluator()
 
         if(sscanf(line, "%s%d", pat, &scr) == 2) {
             size_t len = strlen(pat);
-            printf("%2d: score[ %9s ] = %9d\n", i++, pat, scr);
+//            printf("%2d: score[ %9s ] = %9d\n", i++, pat, scr);
             assert(_SHAPE_LEN_MIN <= len && len <= _SHAPE_LEN_MAX);
             const char *p = pat - 1;
             int mask = 0;

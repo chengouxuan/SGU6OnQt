@@ -128,54 +128,8 @@ bool Frame::FindWinningMove(bool isBlack, DMove &dm) {
     return false;
 }
 
-//int Frame::MiniWind(bool isBlack, int depth, int lower, int upper) {
-//    assert(lower < upper);
-//#ifdef _DEBUG
-//    printf("%s depth = %d\n", isBlack ? "B" : "W", depth);
-//    ::PrintComplexBoard();
-//#endif
-//    int eval;
-//    DMove dm = RandomDMove(isBlack);
-//    if(GetTransTable(isBlack).LookUp(depth, lower, upper, eval, dm)) {
-//        ++GetTransTable(isBlack)._hits;
-//        return eval;
-//    } else if(IsGameOver(isBlack, eval, dm)) {
-//        GetTransTable(isBlack).Enter(_DEPTH_LIMIT, Item::TYPE_SUCCESS, eval, dm);
-//        return eval;
-//    } else if(depth <= 0) {
-//        return evaluator.Evaluate(isBlack);
-//    }
-//    ++_nodes;
-//    MGDMoveArray &arr = moveGenerator.Generate(isBlack, depth);
-//    assert(arr.Size() > 0);
-//    SortByHistoryScore(arr);
-//    int maxScore = -INFINITY;
-//    FOR_EACH(i, arr.Size()) {
-//        int wnd = (maxScore > -upper ? maxScore : -upper);//*/std::max(maxScore, -upper);
-//        ::MakeDMove(arr.ItemRef(i));
-//        int score = -MiniWind(!isBlack, depth - 1, wnd, wnd + 1);
-//        ::UnmakeLastDMove();
-//        if(wnd < score && score < upper) {
-//            ::MakeDMove(arr.ItemRef(i));
-//            maxScore = -MiniWind(!isBlack, depth - 1, score, -lower);
-//            ::UnmakeLastDMove();
-//            dm = arr.ItemRef(i);
-//        } else if(maxScore < score || maxScore == -INFINITY) {
-//            maxScore = score;
-//            dm = arr.ItemRef(i);
-//        }
-//        if(upper <= maxScore) {
-//            historyScore.IncreaseScore(arr.ItemRef(i), 1 << depth);
-//            GetTransTable(isBlack).Enter(depth, Item::TYPE_FAIL_HIGH, maxScore, arr.ItemRef(i));
-//            return maxScore;
-//        }
-//    }
-//    Item::Type type = (lower < maxScore && maxScore < upper ? Item::TYPE_SUCCESS : Item::TYPE_FAIL_LOW);
-//    GetTransTable(isBlack).Enter(depth, type, maxScore, dm);
-//    return maxScore;
-//}
-
-int Frame::IDMTDF(bool isBlack) {
+DMove Frame::IDMTDF(bool isBlack) {
+    DMove dMove;
     int depth = 1;
     clock_t cl = clock();
     int step = 1500000;
@@ -220,10 +174,11 @@ int Frame::IDMTDF(bool isBlack) {
             guess = (lower + upper) / 2;
         }
         g[depth++ % 2] = guess;
-        gSearcher.SetDMove(_dMove);
+        dMove = _dMove;
 //        printf("%d ms\n", clock() - cl);
     }
-    return g[1];
+    return dMove;
+//    return g[1];
 }
 
 int Frame::_depth_limit;

@@ -12,7 +12,7 @@
 #include <QMutexLocker>
 #include "AI/boardformatter.h"
 #include "AI/searcherbridge.h"
-
+#include <iostream>
 
 struct SearchDataStruct
 {
@@ -133,6 +133,7 @@ int AIController::exec()
                 SearcherBridge::invokeSearch(req->data.searchData.board,
                                              req->data.searchData.whichPlayerToGo,
                                              req->data.searchData.movesToGo,
+                                             7, 20000, 9, 5,
                                              result.r1, result.c1,
                                              result.r2, result.c2);
 
@@ -325,32 +326,3 @@ void AIController::startChildProcess()
     processStarted = true;
 }
 
-void AIController::test()
-{
-    static char *testData = {
-        "   A B C D E F G H I J K L M N o P Q R S" "\n"
-        " 1 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 2 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 3 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 4 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 5 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 6 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 7 . . . . . X . O X . . . . . . . . . ." "\n"
-        " 8 . . . . . . . . O X . . . . . . . . ." "\n"
-        " 9 . . . . . . . O . X . . . . . . . . ." "\n"
-        "10 . . . . . . . . O . . . . . . . . . ." "\n"
-        "11 . . . . . . . . . . . . . . . . . . ." "\n"
-        "12 . . . . . . . . . . . . . . . . . . ." "\n"
-        "13 . . . . . . . . . . . X . . . . . . ." "\n"
-        "14 . . . . . . . . . . . . . . . . . . ." "\n"
-        "15 . . . . . . . . . . . . . . . . . . ." "\n"
-        "16 . . . . . . . . . . . . . . . . . . ." "\n"
-        "17 . . . . . . . . . . . . . . . . . . ." "\n"
-        "18 . . . . . . . . . . . . . . . . . . ." "\n"
-        "19 X . . . . . . . . . . . . . . . . . ." "\n"
-    };
-
-    int r1, c1, r2, c2;
-    SearcherBridge::invokeSearch(BoardFormatter::stringToBoard(testData).board,
-                   WhitePlayer, 2, r1, c1, r2, c2);
-}

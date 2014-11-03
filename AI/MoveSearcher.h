@@ -19,17 +19,12 @@
 #include <set>
 #include <queue>
 #include <Windows.h>  
+#include "OpeningFinder.h"
 
 // 搜索类
 class MoveSearcher {
 public:
     static /*const*/ int _time_limit/* = 45000*/; // ms
-
-	// 调用 SearchGoodMoves() 后从这个变量获取着法
-    DMove _dMove;
-
-    bool _isBlack;                 // 是否
-    Board _board;                  // 棋盘
 
 public:
 
@@ -39,32 +34,11 @@ public:
 	// board:        棋盘数组
 	// isBlacksTurn: true 为黑方回合，false 为白方回合
 	// moves:        1 放一子，2 放二子
-	void SearchGoodMoves(Board board, bool isBlacksTurn, int moves = 2);
+    DMove SearchGoodMoves(Board board, bool isBlacksTurn, int moves = 2);
 
-    //************************************
-    // Method:    SetDMove
-    // FullName:  MoveSearcher::SetDMove
-    // Access:    public 
-    // Returns:   void
-    // Qualifier: 设置最佳着法
-    // Parameter: const DMove & dm 着法
-    //************************************
-    void SetDMove(const DMove &dm) {
-        _dMove = dm;
-    }
+private:
 
-    //************************************
-    // Method:    GetDMove
-    // FullName:  MoveSearcher::GetDMove
-    // Access:    public 
-    // Returns:   DMove
-    // Qualifier: 调用 SearchGoodMoves() 取得最佳着法
-    //************************************
-    DMove GetDMove() {
-        DMove dm = _dMove;
-        return dm;
-    }
-
+    OpeningFinder openingFinder;
 };
 
 extern MoveSearcher gSearcher;

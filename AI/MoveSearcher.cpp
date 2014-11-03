@@ -15,29 +15,21 @@
 #include <numeric>
 #include "OpeningFinder.h"
 
-DWORD SearchThread(LPVOID p) {
+
+DMove MoveSearcher::SearchGoodMoves(Board board, bool isBlack, int moves /* = 2 */) {
+    DMove dMove;
+    if(moves == 1) {
+        dMove._r1 = RowMax / 2;
+        dMove._c1 = ColumnMax / 2;
+        return dMove;
+    } else if(openingFinder.find(board, isBlack, dMove)) {
+        return dMove;
+    }
     if (evaluator == NULL) {
         evaluator = new Evaluator;
     }
-    frame.Search(gSearcher._board, gSearcher._isBlack);
-    return 0;
-}
-
-
-
-void MoveSearcher::SearchGoodMoves(Board board, bool isBlack, int moves /* = 2 */) {
-    if(moves == 1) {
-        _dMove._r1 = RowMax / 2;
-        _dMove._c1 = ColumnMax / 2;
-        return;
-    } else if(openingFinder.Find(board, isBlack)) {
-        _dMove = openingFinder._dMove;
-        return;
-    }
-    // begin the search thread
-    _isBlack = isBlack;
-    memcpy(_board, board, sizeof(Board));
-    SearchThread(0);
+    dMove = frame.Search(board, isBlack);
+    return dMove;
 }
 
 
@@ -70,15 +62,5 @@ int CountThreats(bool isBlack) {
     }
     return 2;
 }
-
-//void ReInitParams() {
-//    frame._depth_limit = 7;
-//    frame._time_limit = 10000;
-//    searcher._time_limit = 20000;
-//    dtsser._dtss_depth = 9;
-//    dtsser._id_dtss_depth = 5;
-//}
-
-int MoveSearcher::_time_limit;
 
 MoveSearcher gSearcher;

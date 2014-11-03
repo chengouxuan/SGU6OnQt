@@ -84,8 +84,6 @@ private:
     QMutex resultMutex;
 
 
-public:
-    static void test();
 };
 
 #endif // AICONTROLLER_H

@@ -1,8 +1,8 @@
 #pragma once
 
 /*
- * ÎÄ¼þ¶¨ÒåÁËËÑË÷¿ò¼Ü Frame, ÓÐÈ«¾ÖÊµÀý frame
- * Frame Í¨¹ýÈ«¾Öº¯Êý²Ù×Ý complexBoard, segmentTable, moveGenerator
+ * ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Frame, ï¿½ï¿½È«ï¿½ï¿½Êµï¿½ï¿½ frame
+ * Frame Í¨ï¿½ï¿½È«ï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ complexBoard, segmentTable, moveGenerator
  *
  *                                                           --2011.08.21
  *
@@ -17,14 +17,14 @@
 
 class Frame {
 public:
-    static /*const*/ int _depth_limit/* = 3*/;        // ËÑË÷×î´óÉî¶È
-    static const int _DTSS_SCORE = Infinity;  // Ë«ÍþÐ²ËÑË÷³É¹¦·ÖÊý
-    static /*const*/ int _time_limit/* = 10000*/;     // Ê±¼äÏÞÖÆ, ÔÚÎ´³¬¹ý¸ÃÏÞÖÆºÍÉî¶ÈÏÞÖÆ _DEPTH_LIMIT Ê±½øÈëÉîÒ»²ãËÑË÷
+    static /*const*/ int _depth_limit/* = 3*/;        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    static const int _DTSS_SCORE = Infinity;  // Ë«ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½
+    static /*const*/ int _time_limit/* = 10000*/;     // Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ _DEPTH_LIMIT Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    DMove _dMove; // ×î¼Ñ×Å·¨
-    int _nodes;   // ½áµãÍ³¼Æ
+    DMove _dMove; // ï¿½ï¿½ï¿½ï¿½ï¿½Å·ï¿½
+    int _nodes;   // ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½
 
-    class Item { // ÖÃ»»±íÏî
+    class Item { // ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
     public:
         enum Type {
             TYPE_FAIL_HIGH,
@@ -55,7 +55,7 @@ public:
     };
 
     typedef TranspositionTable <Item, 1048583> TransTableBase;
-    class TransTable: public TransTableBase { // ÖÃ»»±í
+    class TransTable: public TransTableBase { // ï¿½Ã»ï¿½ï¿½ï¿½
     public:
         void Enter(int depth, Item::Type type, int eval, const DMove &dm) {
             TransTableBase::Enter(Item(type, eval, depth, ::CheckSum(), dm), ::Hash());
@@ -86,9 +86,9 @@ private:
     // FullName:  Frame::NegaMax
     // Access:    private 
     // Returns:   int
-    // Qualifier: ¸º¼«´óÖµ
-    // Parameter: bool isBlack ºÚ½áµãÎª true, °×½áµãÎª false
-    // Parameter: int depth Éî¶ÈÏÞÖÆ
+    // Qualifier: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+    // Parameter: bool isBlack ï¿½Ú½ï¿½ï¿½ï¿½Îª true, ï¿½×½ï¿½ï¿½ï¿½Îª false
+    // Parameter: int depth ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     // Parameter: int lower alpha Öµ
     // Parameter: int upper beta Öµ
     //************************************
@@ -101,10 +101,10 @@ private:
     // FullName:  Frame::IDMTDF
     // Access:    private 
     // Returns:   int
-    // Qualifier: µü´ú¼ÓÉî MTD(f)
-    // Parameter: bool isBlack ºÚ·½Îª true, °×·½Îª false
+    // Qualifier: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MTD(f)
+    // Parameter: bool isBlack ï¿½Ú·ï¿½Îª true, ï¿½×·ï¿½Îª false
     //************************************
-    int IDMTDF(bool isBlack);
+    DMove IDMTDF(bool isBlack);
 
     //int MiniWind(bool isBlack, int depth, int lower, int upper);
 
@@ -112,10 +112,10 @@ private:
     // Method:    FindWinningMove
     // FullName:  Frame::FindWinningMove
     // Access:    private 
-    // Returns:   bool true ÕÒµ½, false ÕÒ²»µ½
-    // Qualifier: ÐÎ³ÉÁùÁ¬µÄ×Å·¨
-    // Parameter: bool isBlack ºÚ·½Îª true, °×·½Îª false
-    // Parameter: DMove & dm ×Å·¨
+    // Returns:   bool true ï¿½Òµï¿½, false ï¿½Ò²ï¿½ï¿½ï¿½
+    // Qualifier: ï¿½Î³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å·ï¿½
+    // Parameter: bool isBlack ï¿½Ú·ï¿½Îª true, ï¿½×·ï¿½Îª false
+    // Parameter: DMove & dm ï¿½Å·ï¿½
     //************************************
     bool FindWinningMove(bool isBlack, DMove &dm);
 
@@ -124,10 +124,10 @@ private:
     // FullName:  Frame::IsGameOver
     // Access:    private 
     // Returns:   bool
-    // Qualifier: ÊÇ·ñÀíÂÛÉÏÓÎÏ·ÒÑ¾­½áÊø
-    // Parameter: bool isBlack ºÚ·½»ØºÏÎª true, °×·½»ØºÏÎª false
-    // Parameter: int & eval ÈôÓÎÏ·½áÊø´ËÖµÎª½áµãÖµ
-    // Parameter: DMove & dm ÈôÓÎÏ·½áÊø´Ë×Å·¨Îª¸Ã½ÚµãµÄ×î¼Ñ×Å·¨
+    // Qualifier: ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Parameter: bool isBlack ï¿½Ú·ï¿½ï¿½Øºï¿½Îª true, ï¿½×·ï¿½ï¿½Øºï¿½Îª false
+    // Parameter: int & eval ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎªï¿½ï¿½ï¿½ï¿½Öµ
+    // Parameter: DMove & dm ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å·ï¿½Îªï¿½Ã½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å·ï¿½
     //************************************
     bool IsGameOver(bool isBlack, int &eval, DMove &dm) {
         if(FindWinningMove(isBlack, dm)) {
@@ -148,7 +148,7 @@ public:
     // FullName:  Frame::ResetCounters
     // Access:    public 
     // Returns:   void
-    // Qualifier: Í³¼ÆÇåÁã
+    // Qualifier: Í³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     //************************************
     void ResetCounters() {
         _nodes = 0;
@@ -170,8 +170,8 @@ private:
     // FullName:  Frame::SortByHistoryScore
     // Access:    private static 
     // Returns:   void
-    // Qualifier: ×Å·¨ÅÅÐò
-    // Parameter: MGDMoveArray & ±»ÅÅÐòµÄ×Å·¨
+    // Qualifier: ï¿½Å·ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Parameter: MGDMoveArray & ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å·ï¿½
     //************************************
     static void SortByHistoryScore(MGDMoveArray &);
 
@@ -206,31 +206,13 @@ public:
     // FullName:  Frame::Search
     // Access:    public 
     // Returns:   void
-    // Qualifier: ËÑË÷, Íâ²¿µ÷ÓÃµôÓÃ´Ëº¯Êý½øÐÐËÑË÷
-    // Parameter: Board board ÆåÅÌÊý×é
-    // Parameter: bool isBlack ºÚ·½»ØºÏÎª true, °×·½»ØºÏÎª false
+    // Qualifier: ï¿½ï¿½ï¿½ï¿½, ï¿½â²¿ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ã´Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Parameter: Board board ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Parameter: bool isBlack ï¿½Ú·ï¿½ï¿½Øºï¿½Îª true, ï¿½×·ï¿½ï¿½Øºï¿½Îª false
     //************************************
-    void Search(Board board, bool isBlack) {
+    DMove Search(Board board, bool isBlack) {
         NewSearchInit(board);
-        //DMove dm;
-        gSearcher.SetDMove(RandomDMove(isBlack));
-        //if(FindWinningMove(isBlack, _dMove)) {
-        //    printf("win\n");
-        //    searcher.SetDMove(_dMove);
-        //    return;
-        //} else if(dtsser.Search(isBlack, true)) {
-        //    printf("dtss\n");
-        //    searcher.SetDMove(dtsser._dMove);
-        //    return;
-        //} else if(!FindWinningMove(!isBlack, dm) && rzdefender.Defende(isBlack)) {
-        //    searcher.SetDMove(rzdefender._dMove);
-        //    printf("relevance zone defende\n");
-        //    return;
-        //}
-        IDMTDF(isBlack);
-        //MTDF(isBlack, NegaMax(isBlack, _DEPTH_LIMIT - 2, -INFINITY, +INFINITY));
-        //MiniWind(isBlack);
-        //Aspiration(isBlack, NegaMax(isBlack, _DEPTH_LIMIT - 2, -INFINITY, +INFINITY), 123456);
+        return IDMTDF(isBlack);
     }
 };
 
