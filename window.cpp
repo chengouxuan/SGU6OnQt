@@ -104,7 +104,7 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
         s.highlightedPosition1Column = -1;
     }
 
-    boardWidget->repaint();
+    boardWidget->update();
 
     WhichPlayer whoWins = gameLogic.whoWins();
     QMessageBox messageBox;
@@ -132,15 +132,41 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
 
 void Window::whiteRequestThinking()
 {
-    if (!aiWhite.requestThinking(makeBoardDataStruct())) {
+    if (aiWhite.requestThinking(makeBoardDataStruct())) {
+        QTimer::singleShot(500, this, SLOT(whiteGetThinkingResult()));
+    } else {
         QTimer::singleShot(300, this, SLOT(whiteRequestThinking()));
     }
 }
 
 void Window::blackRequestThinking()
 {
-    if (!aiBlack.requestThinking(makeBoardDataStruct())) {
+    if (aiBlack.requestThinking(makeBoardDataStruct())) {
+        QTimer::singleShot(500, this, SLOT(blackGetThinkingResult()));
+    } else {
         QTimer::singleShot(300, this, SLOT(blackRequestThinking()));
+    }
+}
+
+void Window::whiteGetThinkingResult()
+{
+    int r1 = -1, c1 = -1, r2 = -1, c2 = -1;
+    if (!aiWhite.getThinkingResult(r1, c1, r2, c2)) {
+        QTimer::singleShot(500, this, SLOT(whiteGetThinkingResult()));
+    } else {
+        putStone(r1, c1);
+        putStone(r2, c2);
+    }
+}
+
+void Window::blackGetThinkingResult()
+{
+    int r1 = -1, c1 = -1, r2 = -1, c2 = -1;
+    if (!aiBlack.getThinkingResult(r1, c1, r2, c2)) {
+        QTimer::singleShot(500, this, SLOT(blackGetThinkingResult()));
+    } else {
+        putStone(r1, c1);
+        putStone(r2, c2);
     }
 }
 
@@ -154,20 +180,28 @@ AIController::BoardDataStruct Window::makeBoardDataStruct()
     }
     st.movesToGo = gameLogic.stonesToDo();
     st.whichPlayersTurn = gameLogic.whichPlayersTurn();
+    return st;
 }
 
 
+bool Window::putStone(int j, int i)
+{
+    WhichPlayer player = gameLogic.whichPlayersTurn();
+    if (0 <= i && i < RowMax && 0 <= j && j < ColumnMax) {
+        if (gameLogic.putStone(i, j)) {
+            onStonePlaced(player, i, j);
+        }
+    }
+}
+
 void Window::boardWidgetCellClicked(int i, int j)
 {
-    WhichPlayer oldPlayer = gameLogic.whichPlayersTurn();
+    WhichPlayer player = gameLogic.whichPlayersTurn();
 
-    if ((oldPlayer == WhitePlayer && whiteUseAI) ||
-            (oldPlayer == BlackPlayer && blackUseAI)) {
+    if ((player == WhitePlayer && whiteUseAI) ||
+            (player == BlackPlayer && blackUseAI)) {
         return;
     }
 
-    if (gameLogic.putStone(i, j)) {
-
-        onStonePlaced(oldPlayer, i, j);
-    }
+    putStone(j, i);
 }

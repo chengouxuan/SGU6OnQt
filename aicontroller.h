@@ -7,10 +7,13 @@
 #include "globaldef.h"
 #include <QProcess>
 #include <QSharedMemory>
+#include <QThread>
+#include <QMutex>
 
 
-class AIController
+class AIController : public QObject
 {
+    Q_OBJECT
 
 public:
 
@@ -43,22 +46,41 @@ public:
 public:
 
     AIController(const QString &sharedMemoryKey);
+    ~AIController();
     int exec();
     bool requestThinking(const BoardDataStruct &boardDataStruct, const AIParamStruct &param = AIParamStruct());
+    bool getThinkingResult(int &r1, int &c1, int &r2, int &c2);
 
+private slots:
+    void doWait();
+
+signals:
+    void readyToWait();
 private:
 
-    void start();
+    void startChildProcess();
 
 private:
 
     QString logPath;
+    QString threadLogPath;
 
     QProcess process;
     bool processStarted;
 
     QSharedMemory sharedMemory;
 
+    QThread waitingThread;
+    bool waitingThreadStarted;
+
+    bool isResultReady;
+
+    int resultR1;
+    int resultC1;
+    int resultR2;
+    int resultC2;
+
+    QMutex resultMutex;
 };
 
 #endif // AICONTROLLER_H
