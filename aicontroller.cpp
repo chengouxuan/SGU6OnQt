@@ -29,22 +29,15 @@ struct SearchResultStruct
     int r1, c1, r2, c2;
 };
 
-enum
-{
-    ParamSizeMax = 1024,
-};
-
 struct RequestDataStruct
 {
     enum Type {
         TypeExit,
         TypeSearch,
-        TypeSetParam
     } type;
 
     union Data {
         SearchDataStruct searchData;
-        int param[ParamSizeMax];
     } data;
 };
 
