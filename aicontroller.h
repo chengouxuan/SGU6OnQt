@@ -8,6 +8,7 @@
 #include <QProcess>
 #include <QSharedMemory>
 
+
 class AIController
 {
 
@@ -20,14 +21,30 @@ public:
     };
 
     struct AIParamStruct {
-
+        int alphaBetaDepth;
+        int timeLimitationMS;
+        int dtssDepth;
+        int idDtssDepth;
+        AIParamStruct()
+            : alphaBetaDepth(7)
+            , timeLimitationMS(20000)
+            , dtssDepth(9)
+            , idDtssDepth(5) {}
+        AIParamStruct(int argAlphaBetaDepth,
+                      int argTimeLimit,
+                      int argDtssDepth,
+                      int argIdDtssDepth)
+            : alphaBetaDepth(argAlphaBetaDepth)
+            , timeLimitationMS(argTimeLimit)
+            , dtssDepth(argDtssDepth)
+            , idDtssDepth(argIdDtssDepth) {}
     };
 
 public:
 
     AIController(const QString &sharedMemoryKey);
     int exec();
-    bool requestThinking(const BoardDataStruct &boardDataStruct);
+    bool requestThinking(const BoardDataStruct &boardDataStruct, const AIParamStruct &param = AIParamStruct());
 
 private:
 

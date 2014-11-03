@@ -17,7 +17,7 @@ struct SearchDataStruct
 {
     CellType board[RowMax][ColumnMax];
     WhichPlayer whichPlayerToGo;
-    int possibleDepth;
+    int alphaBetaDepth;
     int timeLimitationMS;
     int dtssDepth;
     int idDtssDepth;
@@ -131,7 +131,7 @@ int AIController::exec()
     Logger(logPath) << "Shared Memory detached.\r\n";
 }
 
-bool AIController::requestThinking(const BoardDataStruct &boardDataStruct)
+bool AIController::requestThinking(const BoardDataStruct &boardDataStruct, const AIParamStruct &param)
 {
     if (!processStarted) {
         start();
@@ -159,11 +159,13 @@ bool AIController::requestThinking(const BoardDataStruct &boardDataStruct)
         }
     }
     searchData->whichPlayerToGo = boardDataStruct.whichPlayersTurn;
-    searchData->possibleDepth = 7;
-    searchData->timeLimitationMS = 20000;
-    searchData->dtssDepth = 9;
-    searchData->idDtssDepth = 5;
     searchData->movesToGo = boardDataStruct.movesToGo;
+
+    searchData->alphaBetaDepth = param.alphaBetaDepth;
+    searchData->timeLimitationMS = param.timeLimitationMS;
+    searchData->dtssDepth = param.dtssDepth;
+    searchData->idDtssDepth = param.idDtssDepth;
+
     sharedMemoryStruct->requestProcessed = false;
     sharedMemoryStruct->data.request.type = RequestDataStruct::TypeSearch;
 
