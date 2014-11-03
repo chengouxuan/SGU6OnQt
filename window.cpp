@@ -87,21 +87,6 @@ Window::Window()
 }
 
 
-CellType Window::cellTypeAt(int row, int column)
-{
-    return gameLogic.cellTypeAt(row, column);
-}
-
-WhichPlayer Window::whichPlayersTurn()
-{
-    return gameLogic.whichPlayersTurn();
-}
-
-int Window::movesToGo()
-{
-    return gameLogic.stonesToDo();
-}
-
 
 void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
 {
@@ -147,16 +132,28 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
 
 void Window::whiteRequestThinking()
 {
-    if (!aiWhite.requestThinking(this)) {
+    if (!aiWhite.requestThinking(makeBoardDataStruct())) {
         QTimer::singleShot(300, this, SLOT(whiteRequestThinking()));
     }
 }
 
 void Window::blackRequestThinking()
 {
-    if (!aiBlack.requestThinking(this)) {
+    if (!aiBlack.requestThinking(makeBoardDataStruct())) {
         QTimer::singleShot(300, this, SLOT(blackRequestThinking()));
     }
+}
+
+AIController::BoardDataStruct Window::makeBoardDataStruct()
+{
+    AIController::BoardDataStruct st;
+    for (int i = 0; i < RowMax; ++i) {
+        for (int k = 0; k < ColumnMax; ++k) {
+            st.board[i][k] = gameLogic.cellTypeAt(i, k);
+        }
+    }
+    st.movesToGo = gameLogic.stonesToDo();
+    st.whichPlayersTurn = gameLogic.whichPlayersTurn();
 }
 
 

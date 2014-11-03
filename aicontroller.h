@@ -13,20 +13,21 @@ class AIController
 
 public:
 
-    class BoardData {
+    struct BoardDataStruct {
+        CellType board[RowMax][ColumnMax];
+        WhichPlayer whichPlayersTurn;
+        int movesToGo;
+    };
 
-    public:
+    struct AIParamStruct {
 
-        virtual CellType cellTypeAt(int row, int column) = 0;
-        virtual WhichPlayer whichPlayersTurn() = 0;
-        virtual int movesToGo() = 0;
     };
 
 public:
 
     AIController(const QString &sharedMemoryKey);
     int exec();
-    bool requestThinking(BoardData *boardData);
+    bool requestThinking(const BoardDataStruct &boardDataStruct);
 
 private:
 

@@ -131,15 +131,10 @@ int AIController::exec()
     Logger(logPath) << "Shared Memory detached.\r\n";
 }
 
-bool AIController::requestThinking(BoardData *boardData)
+bool AIController::requestThinking(const BoardDataStruct &boardDataStruct)
 {
     if (!processStarted) {
         start();
-    }
-
-    if (boardData == NULL) {
-        Logger(logPath) << "null Stone Data.\r\n";
-        return false;
     }
 
     if (sharedMemory.isAttached()) {
@@ -160,15 +155,15 @@ bool AIController::requestThinking(BoardData *boardData)
 
     for (int i = 0; i < RowMax; ++i) {
         for (int k = 0; k < ColumnMax; ++k) {
-            searchData->board[i][k] = boardData->cellTypeAt(i, k);
+            searchData->board[i][k] = boardDataStruct.board[i][k];
         }
     }
-    searchData->whichPlayerToGo = boardData->whichPlayersTurn();
+    searchData->whichPlayerToGo = boardDataStruct.whichPlayersTurn;
     searchData->possibleDepth = 7;
     searchData->timeLimitationMS = 20000;
     searchData->dtssDepth = 9;
     searchData->idDtssDepth = 5;
-    searchData->movesToGo = boardData->movesToGo();
+    searchData->movesToGo = boardDataStruct.movesToGo;
     sharedMemoryStruct->requestProcessed = false;
     sharedMemoryStruct->data.request.type = RequestDataStruct::TypeSearch;
 

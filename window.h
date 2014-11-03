@@ -49,7 +49,7 @@
 
 class BoardWidget;
 
-class Window : public QWidget, public AIController::BoardData
+class Window : public QWidget
 {
     Q_OBJECT
 
@@ -82,6 +82,8 @@ private:
 
     AIController aiWhite;
     AIController aiBlack;
+
+    AIController::BoardDataStruct makeBoardDataStruct();
 
 };
 

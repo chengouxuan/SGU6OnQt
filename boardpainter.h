@@ -22,7 +22,7 @@ class BoardPainter
 public:
 
 
-    BoardPainter(StonePaintData *sd);
+    BoardPainter();
 
     void paint(QWidget *widget, StonePaintData *stoneData);
     void setHighlightedCell(int i, int j);
