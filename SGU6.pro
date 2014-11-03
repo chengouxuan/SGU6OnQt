@@ -28,7 +28,8 @@ HEADERS       = \
     AI/Zone.h \
     AI/UtilityTypes.h \
     logger.h \
-    globaldef.h
+    globaldef.h \
+    AI/boardformatter.h
 
 SOURCES       = main.cpp \
                 window.cpp \
@@ -50,7 +51,8 @@ SOURCES       = main.cpp \
     AI/SegmentTable.cpp \
     AI/utilities.cpp \
     AI/Zone.cpp \
-    logger.cpp
+    logger.cpp \
+    AI/boardformatter.cpp
 
 RESOURCES     = \
     sgu6.qrc

@@ -67,7 +67,7 @@ public:
 
 };
 
-extern MoveSearcher searcher;
+extern MoveSearcher gSearcher;
 
 //************************************
 // Method:    GetCell

@@ -213,7 +213,7 @@ public:
     void Search(Board board, bool isBlack) {
         NewSearchInit(board);
         //DMove dm;
-        searcher.SetDMove(RandomDMove(isBlack));
+        gSearcher.SetDMove(RandomDMove(isBlack));
         //if(FindWinningMove(isBlack, _dMove)) {
         //    printf("win\n");
         //    searcher.SetDMove(_dMove);

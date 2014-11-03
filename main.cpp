@@ -45,6 +45,7 @@
 
 #include <QProcess>
 #include <QMessageBox>
+#include "AI/boardformatter.h"
 
 static bool callAI = false;
 
@@ -61,6 +62,9 @@ void preprocess(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    BoardFormatter::test();
+    AIController::test();
+
     preprocess(argc, argv);
 
     if (callAI) {

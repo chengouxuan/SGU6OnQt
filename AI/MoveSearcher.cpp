@@ -19,7 +19,7 @@ DWORD SearchThread(LPVOID p) {
     if (evaluator == NULL) {
         evaluator = new Evaluator;
     }
-    frame.Search(searcher._board, searcher._isBlack);
+    frame.Search(gSearcher._board, gSearcher._isBlack);
     return 0;
 }
 
@@ -81,4 +81,4 @@ int CountThreats(bool isBlack) {
 
 int MoveSearcher::_time_limit;
 
-MoveSearcher searcher;
+MoveSearcher gSearcher;

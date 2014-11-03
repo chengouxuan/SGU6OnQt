@@ -11,6 +11,7 @@
 #include "logger.h"
 #include <QDateTime>
 #include <QMutexLocker>
+#include "AI/boardformatter.h"
 
 
 struct SearchDataStruct
@@ -86,6 +87,19 @@ AIController::~AIController()
     }
 }
 
+void invokeSearcher(MoveSearcher *searcher, Board board, WhichPlayer whichPlayer, int movesToGo,
+                    int &r1, int &c1, int &r2, int &c2)
+{
+    searcher->SearchGoodMoves(board,
+                             whichPlayer,
+                             movesToGo);
+
+    r1 = searcher->GetDMove().GetPoint1()._row;
+    c1 = searcher->GetDMove().GetPoint1()._col;
+    r2 = searcher->GetDMove().GetPoint2()._row;
+    c2 = searcher->GetDMove().GetPoint2()._col;
+}
+
 int AIController::exec()
 {
 
@@ -125,19 +139,21 @@ int AIController::exec()
 
                 Logger(logPath) << "got the data, begin search.\r\n";
 
-                searcher.SearchGoodMoves(req->data.searchData.board,
-                                         req->data.searchData.whichPlayerToGo,
-                                         req->data.searchData.movesToGo);
+
+                SearchResultStruct result;
+
+                invokeSearcher(&gSearcher,
+                               req->data.searchData.board,
+                               req->data.searchData.whichPlayerToGo,
+                               req->data.searchData.movesToGo,
+                               result.r1,
+                               result.c1,
+                               result.r2,
+                               result.c2);
 
                 Logger(logPath) << "search finished\r\n";
 
                 memset(shared, 0, sizeof(SharedMemoryStruct));
-
-                SearchResultStruct result;
-                result.r1 = searcher.GetDMove().GetPoint1()._row;
-                result.c1 = searcher.GetDMove().GetPoint1()._col;
-                result.r2 = searcher.GetDMove().GetPoint2()._row;
-                result.c2 = searcher.GetDMove().GetPoint2()._col;
 
                 shared->data.response.data.searchResult = result;
 
@@ -310,4 +326,34 @@ void AIController::startChildProcess()
     resultR2 = -1;
     resultC2 = -1;
     isResultReady = false;
+}
+
+void AIController::test()
+{
+    static char *testData = {
+        "   A B C D E F G H I J K L M N o P Q R S" "\n"
+        " 1 . . . . . . . . . . . . . . . . . . ." "\n"
+        " 2 . . . . . . . . . . . . . . . . . . ." "\n"
+        " 3 . . . . . . . . . . . . . . . . . . ." "\n"
+        " 4 . . . . . . . . . . . . . . . . . . ." "\n"
+        " 5 . . . . . . . . . . . . . . . . . . ." "\n"
+        " 6 . . . . . . . . . . . . . . . . . . ." "\n"
+        " 7 . . . . . X . O X . . . . . . . . . ." "\n"
+        " 8 . . . . . . . . O X . . . . . . . . ." "\n"
+        " 9 . . . . . . . O . X . . . . . . . . ." "\n"
+        "10 . . . . . . . . O . . . . . . . . . ." "\n"
+        "11 . . . . . . . . . . . . . . . . . . ." "\n"
+        "12 . . . . . . . . . . . . . . . . . . ." "\n"
+        "13 . . . . . . . . . . . X . . . . . . ." "\n"
+        "14 . . . . . . . . . . . . . . . . . . ." "\n"
+        "15 . . . . . . . . . . . . . . . . . . ." "\n"
+        "16 . . . . . . . . . . . . . . . . . . ." "\n"
+        "17 . . . . . . . . . . . . . . . . . . ." "\n"
+        "18 . . . . . . . . . . . . . . . . . . ." "\n"
+        "19 X . . . . . . . . . . . . . . . . . ." "\n"
+    };
+
+    int r1, c1, r2, c2;
+    invokeSearcher(&gSearcher, BoardFormatter::stringToBoard(testData).cell,
+                   WhitePlayer, 2, r1, c1, r2, c2);
 }

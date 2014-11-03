@@ -220,7 +220,7 @@ int Frame::IDMTDF(bool isBlack) {
             guess = (lower + upper) / 2;
         }
         g[depth++ % 2] = guess;
-        searcher.SetDMove(_dMove);
+        gSearcher.SetDMove(_dMove);
 //        printf("%d ms\n", clock() - cl);
     }
     return g[1];
