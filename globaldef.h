@@ -22,5 +22,6 @@ enum WhichPlayer
     ResultDraw
 };
 
+typedef CellType Board[RowMax][ColumnMax];
 
 #endif // GLOBALDEF_H

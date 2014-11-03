@@ -29,7 +29,8 @@ HEADERS       = \
     AI/UtilityTypes.h \
     logger.h \
     globaldef.h \
-    AI/boardformatter.h
+    AI/boardformatter.h \
+    AI/searcherbridge.h
 
 SOURCES       = main.cpp \
                 window.cpp \
@@ -52,7 +53,8 @@ SOURCES       = main.cpp \
     AI/utilities.cpp \
     AI/Zone.cpp \
     logger.cpp \
-    AI/boardformatter.cpp
+    AI/boardformatter.cpp \
+    AI/searcherbridge.cpp
 
 RESOURCES     = \
     sgu6.qrc

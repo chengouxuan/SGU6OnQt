@@ -7,11 +7,11 @@
 #include <cassert>
 #include <QTextStream>
 #include "AI/defines.h"
-#include "AI/MoveSearcher.h"
 #include "logger.h"
 #include <QDateTime>
 #include <QMutexLocker>
 #include "AI/boardformatter.h"
+#include "AI/searcherbridge.h"
 
 
 struct SearchDataStruct
@@ -88,19 +88,6 @@ AIController::~AIController()
     }
 }
 
-void invokeSearcher(MoveSearcher *searcher, Board board, WhichPlayer whichPlayer, int movesToGo,
-                    int &r1, int &c1, int &r2, int &c2)
-{
-    searcher->SearchGoodMoves(board,
-                             whichPlayer,
-                             movesToGo);
-
-    r1 = searcher->GetDMove().GetPoint1()._row;
-    c1 = searcher->GetDMove().GetPoint1()._col;
-    r2 = searcher->GetDMove().GetPoint2()._row;
-    c2 = searcher->GetDMove().GetPoint2()._col;
-}
-
 int AIController::exec()
 {
 
@@ -143,14 +130,11 @@ int AIController::exec()
 
                 SearchResultStruct result;
 
-                invokeSearcher(&gSearcher,
-                               req->data.searchData.board,
-                               req->data.searchData.whichPlayerToGo,
-                               req->data.searchData.movesToGo,
-                               result.r1,
-                               result.c1,
-                               result.r2,
-                               result.c2);
+                SearcherBridge::invokeSearch(req->data.searchData.board,
+                                             req->data.searchData.whichPlayerToGo,
+                                             req->data.searchData.movesToGo,
+                                             result.r1, result.c1,
+                                             result.r2, result.c2);
 
                 Logger(logPath) << "search finished\r\n";
 
@@ -367,6 +351,6 @@ void AIController::test()
     };
 
     int r1, c1, r2, c2;
-    invokeSearcher(&gSearcher, BoardFormatter::stringToBoard(testData).board,
+    SearcherBridge::invokeSearch(BoardFormatter::stringToBoard(testData).board,
                    WhitePlayer, 2, r1, c1, r2, c2);
 }

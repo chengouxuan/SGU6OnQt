@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <cstring>
 
-typedef CellType Board[RowMax][ColumnMax];
 
 class Point {
 public:

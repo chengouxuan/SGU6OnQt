@@ -7,6 +7,7 @@ enum
     Infinity = 1000000000
 };
 
+
 #define FOR_EACH(i, sz) for(int i=0, SZ=(sz); i<SZ; ++i)
 #define FOR_EACH_ROW(i) FOR_EACH(i, RowMax)
 #define FOR_EACH_COL(i) FOR_EACH(i, ColumnMax)
