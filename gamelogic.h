@@ -3,25 +3,19 @@
 
 #include <stack>
 #include <vector>
+#include "globaldef.h"
 
 class GameLogic
 {
 public:
     GameLogic();
 
-    enum WhichPlayer {
-        White, Black, Unknown, Draw
-    };
-
     WhichPlayer whoWins();
     int goBack(int n);
     bool putStone(int i, int j);
     WhichPlayer whichPlayersTurn();
+    int stonesToDo();
 
-
-    enum CellType {
-        WhiteStone, BlackStone, NoStone
-    };
 
     CellType cellTypeAt(int i, int j);
 

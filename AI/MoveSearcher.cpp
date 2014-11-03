@@ -71,13 +71,13 @@ int CountThreats(bool isBlack) {
     return 2;
 }
 
-void ReInitParams() {
-    frame._depth_limit = 7;
-    frame._time_limit = 10000;
-    searcher._time_limit = 20000;
-    dtsser._dtss_depth = 9;
-    dtsser._id_dtss_depth = 5;
-}
+//void ReInitParams() {
+//    frame._depth_limit = 7;
+//    frame._time_limit = 10000;
+//    searcher._time_limit = 20000;
+//    dtsser._dtss_depth = 9;
+//    dtsser._id_dtss_depth = 5;
+//}
 
 int MoveSearcher::_time_limit;
 

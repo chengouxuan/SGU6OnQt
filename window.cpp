@@ -49,6 +49,11 @@ Window::Window()
     , highlightedPosition1Column(-1)
     , highlightedPosition2Row(-1)
     , highlightedPosition2Column(-1)
+    , boardWidget(NULL)
+    , whiteUseAI(true)
+    , blackUseAI(false)
+    , aiWhite("qyerlouk-white")
+    , aiBlack("qyerlouk-black")
 {
     boardWidget = new BoardWidget;
 
@@ -86,58 +91,108 @@ Window::Window()
     setWindowTitle(tr("SGU6"));
 }
 
-StoneData::StoneType Window::stoneTypeAt(int row, int column) {
-    GameLogic::CellType cellType = gameLogic.cellTypeAt(row, column);
+StonePaintData::StonePaintType Window::stonePaintTypeAt(int row, int column)
+{
+    CellType cellType = gameLogic.cellTypeAt(row, column);
     bool highlighted =
             (row == highlightedPosition1Row && column == highlightedPosition1Column) ||
             (row == highlightedPosition2Row && column == highlightedPosition2Column);
-    if (cellType == GameLogic::BlackStone) {
+    if (cellType == CellTypeBlack) {
         if (highlighted) {
-            return StoneData::BlackHighlighted;
+            return StonePaintData::BlackHighlighted;
         } else {
-            return StoneData::Black;
+            return StonePaintData::Black;
         }
     }
-    if (cellType == GameLogic::WhiteStone) {
+    if (cellType == CellTypeWhite) {
         if (highlighted) {
-            return StoneData::WhiteHighlighted;
+            return StonePaintData::WhiteHighlighted;
         } else {
-            return StoneData::White;
+            return StonePaintData::White;
         }
     }
-    return StoneData::None;
+    return StonePaintData::None;
+}
+
+CellType Window::cellTypeAt(int row, int column)
+{
+    return gameLogic.cellTypeAt(row, column);
+}
+
+WhichPlayer Window::whichPlayersTurn()
+{
+    return gameLogic.whichPlayersTurn();
+}
+
+int Window::movesToGo()
+{
+    return gameLogic.stonesToDo();
+}
+
+
+void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
+{
+    WhichPlayer newPlayer = gameLogic.whichPlayersTurn();
+
+    highlightedPosition1Row = highlightedPosition2Row;
+    highlightedPosition1Column = highlightedPosition2Column;
+    highlightedPosition2Row = i;
+    highlightedPosition2Column = j;
+
+    if (newPlayer == oldPlayer) {
+        highlightedPosition1Row = -1;
+        highlightedPosition1Column = -1;
+    }
+
+    boardWidget->repaint();
+
+    WhichPlayer whoWins = gameLogic.whoWins();
+    QMessageBox messageBox;
+    if (whoWins == WhitePlayer) {
+        messageBox.setText(tr("White Wins"));
+        messageBox.exec();
+    } else if (whoWins == BlackPlayer) {
+        messageBox.setText(tr("Black Wins"));
+        messageBox.exec();
+    } else if (whoWins == ResultDraw) {
+        messageBox.setText(tr("Draw"));
+        messageBox.exec();
+    }
+
+    if (whoWins == UnknownPlayer && oldPlayer != newPlayer) {
+        if (newPlayer == WhitePlayer && whiteUseAI) {
+            whiteRequestThinking();
+        } else if (newPlayer == BlackPlayer && blackUseAI) {
+            blackRequestThinking();
+        }
+    }
+}
+
+void Window::whiteRequestThinking()
+{
+    if (!aiWhite.requestThinking(this)) {
+        QTimer::singleShot(300, this, SLOT(whiteRequestThinking()));
+    }
+}
+
+void Window::blackRequestThinking()
+{
+    if (!aiBlack.requestThinking(this)) {
+        QTimer::singleShot(300, this, SLOT(blackRequestThinking()));
+    }
 }
 
 void Window::boardWidgetCellClicked(int i, int j)
 {
-    GameLogic::WhichPlayer player = gameLogic.whichPlayersTurn();
+    WhichPlayer oldPlayer = gameLogic.whichPlayersTurn();
+
+    if ((oldPlayer == WhitePlayer && whiteUseAI) ||
+            (oldPlayer == BlackPlayer && blackUseAI)) {
+        return;
+    }
 
     if (gameLogic.putStone(i, j)) {
 
-        highlightedPosition1Row = highlightedPosition2Row;
-        highlightedPosition1Column = highlightedPosition2Column;
-        highlightedPosition2Row = i;
-        highlightedPosition2Column = j;
-
-        GameLogic::WhichPlayer newPlayer = gameLogic.whichPlayersTurn();
-        if (newPlayer == player) {
-            highlightedPosition1Row = -1;
-            highlightedPosition1Column = -1;
-        }
-
-        boardWidget->repaint();
-
-        GameLogic::WhichPlayer whoWins = gameLogic.whoWins();
-        QMessageBox messageBox;
-        if (whoWins == GameLogic::White) {
-            messageBox.setText(tr("White Wins"));
-            messageBox.exec();
-        } else if (whoWins == GameLogic::Black) {
-            messageBox.setText(tr("Black Wins"));
-            messageBox.exec();
-        } else if (whoWins == GameLogic::Draw) {
-            messageBox.setText(tr("Draw"));
-            messageBox.exec();
-        }
+        onStonePlaced(oldPlayer, i, j);
     }
 }

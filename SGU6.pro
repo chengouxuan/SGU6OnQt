@@ -7,7 +7,6 @@ HEADERS       = \
     gamelogic.h \
     AI/mockai.h \
     aicontroller.h \
-    threadrunreimpelement.h \
     AI/Array.h \
     AI/ComplexBoard.h \
     AI/defines.h \
@@ -27,7 +26,9 @@ HEADERS       = \
     AI/TranspositionTable.h \
     AI/utilities.h \
     AI/Zone.h \
-    AI/UtilityTypes.h
+    AI/UtilityTypes.h \
+    logger.h \
+    globaldef.h
 
 SOURCES       = main.cpp \
                 window.cpp \
@@ -48,7 +49,8 @@ SOURCES       = main.cpp \
     AI/RZDefender.cpp \
     AI/SegmentTable.cpp \
     AI/utilities.cpp \
-    AI/Zone.cpp
+    AI/Zone.cpp \
+    logger.cpp
 
 RESOURCES     = \
     sgu6.qrc

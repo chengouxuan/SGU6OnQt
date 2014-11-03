@@ -7,7 +7,7 @@
 #define CELL_POSITION_SPEC_TOP 4
 #define CELL_POSITION_SPEC_BOTTOM 8
 
-BoardPainter::BoardPainter(StoneData *sd): highlightedCellRow(0), highlightedCellColumn(0)
+BoardPainter::BoardPainter(StonePaintData *sd): highlightedCellRow(0), highlightedCellColumn(0)
 {
     stoneDataProvider = sd;
 }
@@ -36,9 +36,9 @@ void BoardPainter::paint(QWidget *widget)
             if (row == numOfRows - 1) {
                 spec |= CELL_POSITION_SPEC_BOTTOM;
             }
-            StoneData::StoneType stoneType = StoneData::None;
+            StonePaintData::StonePaintType stoneType = StonePaintData::None;
             if (stoneDataProvider != NULL) {
-                stoneType = stoneDataProvider->stoneTypeAt(row, col);
+                stoneType = stoneDataProvider->stonePaintTypeAt(row, col);
             }
             bool drawRedCross = (row == highlightedCellRow && col == highlightedCellColumn);
             paintCell(widget, x, y, cellWidth, cellHeight, spec, stoneType, drawRedCross);
@@ -55,12 +55,12 @@ void BoardPainter::setHighlightedCell(int i, int j)
     highlightedCellColumn = j;
 }
 
-void BoardPainter::setStoneData(StoneData *stoneData) {
+void BoardPainter::setStoneData(StonePaintData *stoneData) {
     stoneDataProvider = stoneData;
 }
 
 void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec,
-                             StoneData::StoneType stoneType, bool drawRedCross)
+                             StonePaintData::StonePaintType stoneType, bool drawRedCross)
 {
 
     QPainter painter(widget);
@@ -136,14 +136,14 @@ void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int heigh
 
     painter.setRenderHint(QPainter::Antialiasing);
 
-    if (stoneType != StoneData::None) {
-        if (stoneType == StoneData::Black || stoneType == StoneData::BlackHighlighted) {
+    if (stoneType != StonePaintData::None) {
+        if (stoneType == StonePaintData::Black || stoneType == StonePaintData::BlackHighlighted) {
             QRadialGradient grad(centerPoint, eclipseRadius, focalPoint);
             grad.setColorAt(0, QColor(Qt::darkGray));
             grad.setColorAt(1, QColor(Qt::black));
             QBrush brush(grad);
             painter.setBrush(brush);
-        } else if (stoneType == StoneData::White || stoneType == StoneData::WhiteHighlighted) {
+        } else if (stoneType == StonePaintData::White || stoneType == StonePaintData::WhiteHighlighted) {
             QRadialGradient grad(centerPoint, eclipseRadius, focalPoint);
             grad.setColorAt(0, QColor(Qt::white));
             grad.setColorAt(1, QColor(Qt::lightGray));
@@ -153,7 +153,7 @@ void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int heigh
         painter.setPen(Qt::NoPen);
         painter.drawEllipse(centerPoint, eclipseRadius, eclipseRadius);
     }
-    if (stoneType == StoneData::BlackHighlighted || stoneType == StoneData::WhiteHighlighted) {
+    if (stoneType == StonePaintData::BlackHighlighted || stoneType == StonePaintData::WhiteHighlighted) {
         painter.setBrush(Qt::NoBrush);
         painter.setPen(Qt::green);
         painter.drawEllipse(centerPoint, eclipseRadius, eclipseRadius);

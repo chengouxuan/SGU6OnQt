@@ -47,14 +47,12 @@
 #include <QMessageBox>
 
 static bool callAI = false;
-static QString aiSharedMemoryKey;
 
 void preprocess(int argc, char *argv[])
 {
     if (argc > 2) {
         if (QString(argv[1]).compare("--ai") == 0) {
             callAI = true;
-            aiSharedMemoryKey = argv[2];
         } else {
             exit(-1);
         }
@@ -66,15 +64,16 @@ int main(int argc, char *argv[])
     preprocess(argc, argv);
 
     if (callAI) {
-        AIController aiController;
-        return aiController.exec(aiSharedMemoryKey);
+
+        QCoreApplication app(argc, argv);
+        AIController aiController(app.arguments().at(2));
+        return aiController.exec();
+
+    } else {
+
+        QApplication app(argc, argv);
+        Window window;
+        window.show();
+        return app.exec();
     }
-
-    AIController aiController;
-    aiController.start();
-
-    QApplication app(argc, argv);
-    Window window;
-    window.show();
-    return app.exec();
 }

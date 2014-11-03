@@ -1,17 +1,10 @@
 #pragma once
 
+#include "globaldef.h"
+
 enum
 {
-    RowMax = 19,
-    ColumnMax = 19,
     Infinity = 1000000000
-};
-
-enum CellType
-{
-    CellTypeBlack,
-    CellTypeWhite,
-    CellTypeEmpty
 };
 
 #define FOR_EACH(i, sz) for(int i=0, SZ=(sz); i<SZ; ++i)

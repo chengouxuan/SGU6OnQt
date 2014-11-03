@@ -3,16 +3,17 @@
 
 #include <QWidget>
 
-class StoneData {
+
+class StonePaintData {
 
 public:
 
-    enum StoneType {
+    enum StonePaintType {
         None, White, Black, WhiteHighlighted, BlackHighlighted
     };
 
 
-    virtual StoneType stoneTypeAt(int row, int column) = 0;
+    virtual StonePaintType stonePaintTypeAt(int row, int column) = 0;
 
 };
 
@@ -20,16 +21,17 @@ class BoardPainter
 {
 public:
 
-    BoardPainter(StoneData *sd);
+
+    BoardPainter(StonePaintData *sd);
 
     void paint(QWidget *widget);
     void setHighlightedCell(int i, int j);
-    void setStoneData(StoneData *stoneData);
+    void setStoneData(StonePaintData *stoneData);
 
 private:
 
     void paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec,
-                   StoneData::StoneType stoneType, bool drawRedCross);
+                   StonePaintData::StonePaintType stoneType, bool drawRedCross);
 
     const static int numOfRows = 19;
     const static int numOfColumns = 19;
@@ -37,7 +39,7 @@ private:
     int highlightedCellRow;
     int highlightedCellColumn;
 
-    StoneData *stoneDataProvider;
+    StonePaintData *stoneDataProvider;
 };
 
 #endif // BOARDPAINTER_H

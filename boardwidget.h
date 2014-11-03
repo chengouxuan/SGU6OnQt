@@ -60,7 +60,7 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
-    void setStoneData(StoneData *stoneData);
+    void setStoneData(StonePaintData *stoneData);
 
 Q_SIGNALS:
     void cellClicked(int i, int j);

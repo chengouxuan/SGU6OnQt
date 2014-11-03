@@ -6,34 +6,47 @@ GameLogic::GameLogic()
 {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
-            cell[i][j] = NoStone;
+            cell[i][j] = CellTypeEmpty;
         }
     }
 }
 
 
-GameLogic::WhichPlayer GameLogic::whichPlayersTurn()
+WhichPlayer GameLogic::whichPlayersTurn()
 {
     if (stack.size() == 0) {
-        return Black;
+        return BlackPlayer;
     } else {
         if ((stack.size() - 1) / 2 % 2 == 0) {
-            return White;
+            return WhitePlayer;
         } else {
-            return Black;
+            return BlackPlayer;
         }
     }
 }
 
-GameLogic::CellType GameLogic::cellTypeAt(int i, int j) {
+int GameLogic::stonesToDo()
+{
+    if (stack.size() == 0) {
+        return 1;
+    } else {
+        if ((stack.size() - 1) % 2 == 0) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+}
+
+CellType GameLogic::cellTypeAt(int i, int j) {
     if (0 <= i && i < rows && 0 <= j && j < columns) {
         return cell[i][j];
     } else {
-        return NoStone;
+        return CellTypeEmpty;
     }
 }
 
-GameLogic::WhichPlayer GameLogic::whoWins()
+WhichPlayer GameLogic::whoWins()
 {
     for (int i = 0; i < rows; ++i) {
         std::vector<CellType> line;
@@ -41,7 +54,7 @@ GameLogic::WhichPlayer GameLogic::whoWins()
             line.push_back(cell[i][j]);
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        if (who != Unknown) {
+        if (who != UnknownPlayer) {
             return who;
         }
     }
@@ -52,7 +65,7 @@ GameLogic::WhichPlayer GameLogic::whoWins()
             line.push_back(cell[i][j]);
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        if (who != Unknown) {
+        if (who != UnknownPlayer) {
             return who;
         }
     }
@@ -65,7 +78,7 @@ GameLogic::WhichPlayer GameLogic::whoWins()
             ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        if (who != Unknown) {
+        if (who != UnknownPlayer) {
             return who;
         }
     }
@@ -78,7 +91,7 @@ GameLogic::WhichPlayer GameLogic::whoWins()
             ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        if (who != Unknown) {
+        if (who != UnknownPlayer) {
             return who;
         }
     }
@@ -91,7 +104,7 @@ GameLogic::WhichPlayer GameLogic::whoWins()
             ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        if (who != Unknown) {
+        if (who != UnknownPlayer) {
             return who;
         }
     }
@@ -104,18 +117,18 @@ GameLogic::WhichPlayer GameLogic::whoWins()
             ++j;
         }
         WhichPlayer who = checkSixStonesConnected(line);
-        if (who != Unknown) {
+        if (who != UnknownPlayer) {
             return who;
         }
     }
 
-    return Unknown;
+    return UnknownPlayer;
 }
 
-GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> &line)
+WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> &line)
 {
     if (line.size() < 6) {
-        return Unknown;
+        return UnknownPlayer;
     }
 
     int whiteCount = 0;
@@ -123,11 +136,11 @@ GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> 
     for (unsigned int i = 0; i < line.size(); ++i) {
 //        qDebug() << (int)line[i] << ", ";
         switch (line[i]) {
-        case WhiteStone:
+        case CellTypeWhite:
             ++whiteCount;
             blackCount = 0;
             break;
-        case BlackStone:
+        case CellTypeBlack:
             ++blackCount;
             whiteCount = 0;
             break;
@@ -138,21 +151,21 @@ GameLogic::WhichPlayer GameLogic::checkSixStonesConnected(std::vector<CellType> 
         }
         if (6 <= whiteCount) {
 //            qDebug() << "white\n";
-            return White;
+            return WhitePlayer;
         }
         if (6 <= blackCount) {
 //            qDebug() << "black\n";
-            return Black;
+            return BlackPlayer;
         }
     }
 
     if (columns * rows <= stack.size()) {
-        return Draw;
+        return ResultDraw;
     }
 
 //    qDebug() << "no\n";
 
-    return Unknown;
+    return UnknownPlayer;
 }
 
 int GameLogic::goBack(int n)
@@ -161,7 +174,7 @@ int GameLogic::goBack(int n)
     while (n-- > 0 && !stack.empty()) {
         int i = stack.top().i;
         int j = stack.top().j;
-        cell[i][j] = NoStone;
+        cell[i][j] = CellTypeEmpty;
         stack.pop();
         forwardStack.push(CellPositionStruct(i, j));
         ++count;
@@ -172,7 +185,7 @@ int GameLogic::goBack(int n)
 
 bool GameLogic::putStone(int i, int j) {
 
-    if (whoWins() != Unknown) {
+    if (whoWins() != UnknownPlayer) {
         return false;
     }
 
@@ -184,16 +197,16 @@ bool GameLogic::putStone(int i, int j) {
         return false;
     }
 
-    if (cell[i][j] != NoStone) {
+    if (cell[i][j] != CellTypeEmpty) {
         return false;
     }
 
     WhichPlayer who = whichPlayersTurn();
-    if (who == White) {
-        cell[i][j] = WhiteStone;
+    if (who == WhitePlayer) {
+        cell[i][j] = CellTypeWhite;
     }
-    if (who == Black) {
-        cell[i][j] = BlackStone;
+    if (who == BlackPlayer) {
+        cell[i][j] = CellTypeBlack;
     }
     forwardStack = std::stack<CellPositionStruct>();
     stack.push(CellPositionStruct(i, j));

@@ -63,7 +63,7 @@ QSize BoardWidget::sizeHint() const
 }
 
 
-void BoardWidget::setStoneData(StoneData *stoneData)
+void BoardWidget::setStoneData(StonePaintData *stoneData)
 {
     boardPainter.setStoneData(stoneData);
 }

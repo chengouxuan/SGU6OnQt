@@ -5,19 +5,23 @@
 #include <QStringList>
 #include <QCoreApplication>
 #include <cassert>
-#include <QFile>
+#include <QTextStream>
 #include "AI/defines.h"
+#include "AI/MoveSearcher.h"
+#include "logger.h"
+#include <QDateTime>
 
 
 
 struct SearchDataStruct
 {
     CellType board[RowMax][ColumnMax];
-    bool isBlacksTurn;
-    int countOfStones;
+    WhichPlayer whichPlayerToGo;
     int possibleDepth;
-    int startTimeMS;
     int timeLimitationMS;
+    int dtssDepth;
+    int idDtssDepth;
+    int movesToGo;
 };
 
 struct SearchResultStruct
@@ -53,91 +57,133 @@ struct ResponseDataStruct {
 
 struct SharedMemoryStruct
 {
-    bool finishProcessing;
+    bool requestProcessed;
     union Data {
         RequestDataStruct request;
         ResponseDataStruct response;
     } data;
 };
 
-AIController::AIController(): thread(NULL)
+AIController::AIController(const QString &sharedMemoryKey)
+    : logPath(QCoreApplication::applicationFilePath() + "." +
+              QString::number(QDateTime::currentMSecsSinceEpoch()) + "." +
+              sharedMemoryKey + "." +
+              QString::number(QCoreApplication::applicationPid()) + ".log")
+    , processStarted(false)
+    , sharedMemory(sharedMemoryKey)
 {
 
 }
 
-void ReInitParams();
-
-int AIController::exec(const QString &sharedMemoryKey)
+int AIController::exec()
 {
-    QSharedMemory sharedMemory(sharedMemoryKey);
 
-    if (!sharedMemory.attach()) {
-        return -1;
+    while (!sharedMemory.attach()) {
+        Logger(logPath) << "failed to attach Shared Memory, key = "
+                        << sharedMemory.key() << ", error = "
+                        << sharedMemory.errorString() << "\r\n";
+        QThread::msleep(500);
     }
 
-    ReInitParams();
+    bool exitLoop = false;
 
-    while(1) {
+    while(!exitLoop) {
+
+        Logger(logPath) << "getting Shared Memory Lock...\r\n";
 
         sharedMemory.lock();
 
-        QFile log(QCoreApplication::applicationFilePath() + ".log");
-        log.open(QFile::Append);
+        Logger(logPath) << "got the lock.\r\n";
 
-//        log << evaluator._evaluations << " evaluations\n";
-//        log << evaluator._transTable._hits << " evaluator hits\n", evaluator._transTable._hits;
-//        log << frame._nodes << " nodes\n";
-//        log << (frame._transTableBlack._hits + frame._transTableWinte._hits) << " hits\n";
-//        log << dtsser._nodes << " dtss nodes\n";
-//        log << (dtsser._transTableBlack._hits + dtsser._transTableWhite._hits) << " dtss hits\n";
-//        log << dtsser._dropedSearches << " dtss dropped searches\n";
-//        lgo << dtsser._idtssSuccesses << " idtss successes\n";
+        SharedMemoryStruct *shared = (SharedMemoryStruct *)sharedMemory.constData();
+        RequestDataStruct *req = (RequestDataStruct *)&shared->data.request;
 
-        log.close();
+        if (req->type == RequestDataStruct::TypeExit) {
+
+            Logger(logPath) << "exiting loop...\r\n";
+
+            exitLoop = true;
+
+        } else if (req->type == RequestDataStruct::TypeSearch) {
+
+            searcher.SearchGoodMoves(req->data.searchData.board,
+                                     req->data.searchData.whichPlayerToGo,
+                                     req->data.searchData.movesToGo);
+
+            Logger(logPath) << QString("got the data, begining search...\r\n");
+
+            QThread::msleep(10 * 1000);
+
+            memset(shared, 0, sizeof(SharedMemoryStruct));
+            shared->requestProcessed = true;
+
+            Logger(logPath) << QString("search finished, but the data is fake.\r\n");
+
+        }
 
         sharedMemory.unlock();
+
+        Logger(logPath) << "Shared Memory unlocked.\r\n";
     }
 
     sharedMemory.detach();
+
+    Logger(logPath) << "Shared Memory detached.\r\n";
 }
 
-void AIController::runImpl(QThread */*thread*/)
+bool AIController::requestThinking(BoardData *boardData)
 {
-    QString sharedMemoryKey("uiopouy45698");
-    QStringList argv;
-    argv.append("--ai");
-    argv.append(sharedMemoryKey);
-    QProcess process;
-    process.start(QCoreApplication::applicationFilePath(), argv);
+    if (!processStarted) {
+        start();
+    }
 
+    if (boardData == NULL) {
+        Logger(logPath) << "null Stone Data.\r\n";
+        return false;
+    }
 
-    while(1) {}
-
-
-    QSharedMemory sharedMemory(sharedMemoryKey);
+    if (sharedMemory.isAttached()) {
+        sharedMemory.detach();
+    }
 
     if (!sharedMemory.create(sizeof(SharedMemoryStruct))) {
-        return;
+        Logger(logPath) << "cannot create Shared Memory." << "\r\n";
+        return false;
     }
 
     sharedMemory.lock();
 
-    char *to = (char*)sharedMemory.data();
+    Logger(logPath) << "Shared Memory created and locked, begin to fill these memory space.\r\n";
 
-    SharedMemoryStruct sharedMemoryStruct;
+    SharedMemoryStruct *sharedMemoryStruct = (SharedMemoryStruct *)sharedMemory.data();
+    SearchDataStruct *searchData = &sharedMemoryStruct->data.request.data.searchData;
 
-
-
-    const char *from = (const char *)&sharedMemoryStruct;
-    assert(sharedMemory.size() == sizeof(SharedMemoryStruct));
-    memcpy(to, from, sharedMemory.size());
+    for (int i = 0; i < RowMax; ++i) {
+        for (int k = 0; k < ColumnMax; ++k) {
+            searchData->board[i][k] = boardData->cellTypeAt(i, k);
+        }
+    }
+    searchData->whichPlayerToGo = boardData->whichPlayersTurn();
+    searchData->possibleDepth = 7;
+    searchData->timeLimitationMS = 20000;
+    searchData->dtssDepth = 9;
+    searchData->idDtssDepth = 5;
+    searchData->movesToGo = boardData->movesToGo();
+    sharedMemoryStruct->requestProcessed = false;
+    sharedMemoryStruct->data.request.type = RequestDataStruct::TypeSearch;
 
     sharedMemory.unlock();
+
+    Logger(logPath) << "fillation finished, Shared Memory unlocked. key = " << sharedMemory.key() << "\r\n";
+
+    return true;
 }
 
 void AIController::start()
 {
-    delete thread;
-    thread = new ThreadRunReimpelement(this);
-    thread->start();
+    QStringList argv;
+    argv.append("--ai");
+    argv.append(sharedMemory.key());
+    process.start(QCoreApplication::applicationFilePath(), argv);
+    processStarted = true;
 }

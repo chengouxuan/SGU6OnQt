@@ -45,20 +45,32 @@
 
 #include "gamelogic.h"
 #include "boardpainter.h"
+#include "aicontroller.h"
 
 class BoardWidget;
 
-class Window : public QWidget, public StoneData
+class Window : public QWidget, public StonePaintData, public AIController::BoardData
 {
     Q_OBJECT
 
 public:
+
     Window();
 
-    StoneType stoneTypeAt(int row, int column);
+    StonePaintType stonePaintTypeAt(int row, int column);
+    CellType cellTypeAt(int row, int column);
+    WhichPlayer whichPlayersTurn();
+    int movesToGo();
+
+
+private:
+
+    void onStonePlaced(WhichPlayer oldPlayer, int i, int j);
 
 private slots:
     void boardWidgetCellClicked(int i, int j);
+    void whiteRequestThinking();
+    void blackRequestThinking();
 
 private:
 
@@ -70,6 +82,12 @@ private:
     BoardWidget *boardWidget;
 
     GameLogic gameLogic;
+
+    bool whiteUseAI;
+    bool blackUseAI;
+
+    AIController aiWhite;
+    AIController aiBlack;
 
 };
 
