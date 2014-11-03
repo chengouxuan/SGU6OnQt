@@ -1,23 +1,83 @@
 #include "evaluator.h"
-#include <cstdio>
 #include <cassert>
 #include "utilities.h"
 #include "defines.h"
 #include "movesearcher.h"
+#include <sstream>
 
-Evaluator::Evaluator() {
-    FILE *file = fopen("Shapes.txt", "r");
-    if(file == NULL) {
-        printf("cannot open Shapes.txt\n");
-        exit(1);
-    }
+Evaluator::Evaluator()
+{
+    char *shapes = {
+        "111111      100000000       0 胜\n"
+        "0111110     999983          1 活五\n"
+        "010111010   999983          2 活五\n"
+        "100111010   999983          3 活五\n"
+        "100111001   999983          4 活五\n"
+        "00111100    999983          5 活四\n"
+        "111110      94427          6 眠五\n"
+        "111101      94427          7 眠五\n"
+        "111011      94427          8 眠五\n"
+        "1111001     94427          9 眠五\n"
+        "1110011     94427          10 眠五\n"
+        "1110101     94427          11 眠五\n"
+        "1101101     94427          12 眠五\n"
+        "1011101     94427          13 眠五\n"
+        "1101011     94427          14 眠五\n"
+        "111100      94427          15 眠四\n"
+        "111001      94427          16 眠四\n"
+        "110011      94427          17 眠四\n"
+        "110101      94427          18 眠四\n"
+        "101101      94427          19 眠四\n"
+        "00111000    54667          20 活三\n"
+        "00110100    54667          21 活三\n"
+        "010110000   9539          22 朦胧三\n"
+        "100110000   9539          23 朦胧三\n"
+        "010011000   9539          24 朦胧三\n"
+        "010101000   9539          25 朦胧三\n"
+        "111000      4663          26 眠三\n"
+        "011100      4663          27 眠三\n"
+        "110100      4663          28 眠三\n"
+        "110010      4663          29 眠三\n"
+        "011010      4663          30 眠三\n"
+        "110001      4663          31 眠三\n"
+        "011001      4663          32 眠三\n"
+        "001101      4663          33 眠三\n"
+        "101010      4663          34 眠三\n"
+        "101001      4663          35 眠三\n"
+        "110000      997           36 眠二\n"
+        "011000      997           37 眠二\n"
+        "001100      997           38 眠二\n"
+        "101000      997           39 眠二\n"
+        "100100      997            40 眠二\n"
+        "010100      997            41 眠二\n"
+        "100010      997            42 眠二\n"
+        "010010      997            43 眠二\n"
+        "100001      997            44 眠二\n"
+        "00110000    4327\n"
+        "00101000    4327\n"
+        "00100100    4327\n"
+        "00011000    4327\n"
+    };
+
     char pat[1024], line[1024];
     int scr;
+
     memset(_score, 0, sizeof(_score));
+
     printf("\nscore table:\n");
     int i = 0;
-    while(fgets(line, sizeof(line) - 1, file) != NULL) {
-        if(sscanf(line, "%s%d", pat, &scr) == 2 && *pat != '#') {
+
+    char *lineBegin = shapes;
+    char *lineEnd = NULL;
+
+    while((lineEnd = strchr(lineBegin, '\n')) && *lineEnd == '\n') {
+
+        memset(line, 0, sizeof(line));
+        strncpy(line, lineBegin, lineEnd - lineBegin);
+
+        lineBegin = lineEnd + 1;
+
+        if(sscanf(line, "%s%d", pat, &scr) == 2) {
             size_t len = strlen(pat);
             printf("%2d: score[ %9s ] = %9d\n", i++, pat, scr);
             assert(_SHAPE_LEN_MIN <= len && len <= _SHAPE_LEN_MAX);
@@ -42,7 +102,6 @@ Evaluator::Evaluator() {
             _score[len][mask] += scr;
         }
     }
-    fclose(file);
 }
 
 int Evaluator::Evaluate(bool isBlacksTurn) {

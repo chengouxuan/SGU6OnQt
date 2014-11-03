@@ -6,7 +6,7 @@
 
 struct BoardStruct
 {
-    CellType cell[RowMax][ColumnMax];
+    CellType board[RowMax][ColumnMax];
 };
 
 class BoardFormatter

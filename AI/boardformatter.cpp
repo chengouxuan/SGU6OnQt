@@ -13,7 +13,7 @@ std::string BoardFormatter::boardToString(const BoardStruct &board)
             if(c == 0) {
                 sstring << "\n" << std::setfill(' ') << std::setw(2) << (r + 1);
             }
-            switch(board.cell[r][c]) {
+            switch(board.board[r][c]) {
                 case CellTypeBlack: sstring << " X"; break;
                 case CellTypeWhite: sstring << " O"; break;
                 case CellTypeEmpty: sstring << " ."; break;
@@ -31,9 +31,9 @@ BoardStruct BoardFormatter::stringToBoard(const std::string &string)
     int r = 0, c = 0;
     for (unsigned int i = 0; i < string.size(); ++i) {
         switch(string[i]) {
-            case 'X': board.cell[r][c++] = CellTypeBlack; break;
-            case 'O': board.cell[r][c++] = CellTypeWhite; break;
-            case '.': board.cell[r][c++] = CellTypeEmpty; break;
+            case 'X': board.board[r][c++] = CellTypeBlack; break;
+            case 'O': board.board[r][c++] = CellTypeWhite; break;
+            case '.': board.board[r][c++] = CellTypeEmpty; break;
         }
         if (c >= ColumnMax) {
             c = 0;

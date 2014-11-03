@@ -76,6 +76,7 @@ AIController::AIController(const QString &sharedMemoryKey)
     , resultC1(-1)
     , resultR2(-1)
     , resultC2(-1)
+    , aWaitingIsDoing(false)
 {
 }
 
@@ -186,6 +187,13 @@ bool AIController::requestThinking(const BoardDataStruct &boardDataStruct, const
         }
     }
 
+    resultR1 = -1;
+    resultC1 = -1;
+    resultR2 = -1;
+    resultC2 = -1;
+    isResultReady = false;
+    aWaitingIsDoing = false;
+
     sharedMemory.lock();
 
     Logger(logPath) << "Shared Memory created and locked, begin to fill these memory space.\r\n";
@@ -216,6 +224,7 @@ bool AIController::requestThinking(const BoardDataStruct &boardDataStruct, const
     Logger(logPath) << "fillation finished, Shared Memory unlocked. key = " << sharedMemory.key() << "\r\n";
 
     if (!processStarted) {
+
         startChildProcess();
     }
 
@@ -237,27 +246,33 @@ bool AIController::getThinkingResult(int &r1, int &c1, int &r2, int &c2)
         waitingThread.start();
         waitingThreadStarted = true;
 
+        aWaitingIsDoing = true;
         emit readyToWait();
 
         return false;
 
     } else {
 
-        QMutexLocker ml(&resultMutex);
+        {
+            QMutexLocker ml(&resultMutex);
 
-        if (isResultReady) {
+            if (isResultReady) {
 
-            r1 = resultR1;
-            c1 = resultC1;
-            r2 = resultR2;
-            c2 = resultC2;
+                r1 = resultR1;
+                c1 = resultC1;
+                r2 = resultR2;
+                c2 = resultC2;
 
-            return true;
-
-        } else {
-
-            return false;
+                return true;
+            }
         }
+
+        if (!aWaitingIsDoing) {
+            aWaitingIsDoing = true;
+            emit readyToWait();
+        }
+
+        return false;
     }
 }
 
@@ -287,6 +302,10 @@ void AIController::doWait()
             SearchResultStruct *result = &sharedMemoryStruct->data.response.data.searchResult;
 
             sharedMemoryStruct->requestProcessed = false;
+
+
+            Logger(threadLogPath) << "thread get result: ((" << result->r1 << ", " << result->c1 << "), ("
+                                                             << result->r2 << ", " << result->c2 << ")).\r\n";
 
             {
                 QMutexLocker ml(&resultMutex);
@@ -320,12 +339,6 @@ void AIController::startChildProcess()
     argv.append(sharedMemory.key());
     process.start(QCoreApplication::applicationFilePath(), argv);
     processStarted = true;
-
-    resultR1 = -1;
-    resultC1 = -1;
-    resultR2 = -1;
-    resultC2 = -1;
-    isResultReady = false;
 }
 
 void AIController::test()
@@ -354,6 +367,6 @@ void AIController::test()
     };
 
     int r1, c1, r2, c2;
-    invokeSearcher(&gSearcher, BoardFormatter::stringToBoard(testData).cell,
+    invokeSearcher(&gSearcher, BoardFormatter::stringToBoard(testData).board,
                    WhitePlayer, 2, r1, c1, r2, c2);
 }

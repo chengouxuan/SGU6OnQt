@@ -104,6 +104,7 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
         s.highlightedPosition1Column = -1;
     }
 
+    boardWidget->setStoneHighlightedStruct(s);
     boardWidget->update();
 
     WhichPlayer whoWins = gameLogic.whoWins();
@@ -126,8 +127,6 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
             blackRequestThinking();
         }
     }
-
-    boardWidget->setStoneHighlightedStruct(s);
 }
 
 void Window::whiteRequestThinking()

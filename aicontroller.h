@@ -72,6 +72,7 @@ private:
 
     QThread waitingThread;
     bool waitingThreadStarted;
+    bool aWaitingIsDoing;
 
     bool isResultReady;
 
