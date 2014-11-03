@@ -45,17 +45,14 @@
 #include <QMessageBox>
 
 Window::Window()
-    : highlightedPosition1Row(-1)
-    , highlightedPosition1Column(-1)
-    , highlightedPosition2Row(-1)
-    , highlightedPosition2Column(-1)
-    , boardWidget(NULL)
+    : boardWidget(NULL)
     , whiteUseAI(true)
     , blackUseAI(false)
     , aiWhite("qyerlouk-white")
     , aiBlack("qyerlouk-black")
 {
     boardWidget = new BoardWidget;
+    boardWidget->setGameLogic(&gameLogic);
 
     connect(boardWidget, SIGNAL(cellClicked(int, int)),
             this, SLOT(boardWidgetCellClicked(int,int)));
@@ -86,33 +83,9 @@ Window::Window()
     mainLayout->addWidget(boardWidget, 1, 1, 19, 19);
     setLayout(mainLayout);
 
-    boardWidget->setStoneData(this);
-
     setWindowTitle(tr("SGU6"));
 }
 
-StonePaintData::StonePaintType Window::stonePaintTypeAt(int row, int column)
-{
-    CellType cellType = gameLogic.cellTypeAt(row, column);
-    bool highlighted =
-            (row == highlightedPosition1Row && column == highlightedPosition1Column) ||
-            (row == highlightedPosition2Row && column == highlightedPosition2Column);
-    if (cellType == CellTypeBlack) {
-        if (highlighted) {
-            return StonePaintData::BlackHighlighted;
-        } else {
-            return StonePaintData::Black;
-        }
-    }
-    if (cellType == CellTypeWhite) {
-        if (highlighted) {
-            return StonePaintData::WhiteHighlighted;
-        } else {
-            return StonePaintData::White;
-        }
-    }
-    return StonePaintData::None;
-}
 
 CellType Window::cellTypeAt(int row, int column)
 {
@@ -134,14 +107,16 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
 {
     WhichPlayer newPlayer = gameLogic.whichPlayersTurn();
 
-    highlightedPosition1Row = highlightedPosition2Row;
-    highlightedPosition1Column = highlightedPosition2Column;
-    highlightedPosition2Row = i;
-    highlightedPosition2Column = j;
+    BoardWidget::StoneHighlightedStruct s = boardWidget->stoneHighlightedStruct();
+
+    s.highlightedPosition1Row = s.highlightedPosition2Row;
+    s.highlightedPosition1Column = s.highlightedPosition2Column;
+    s.highlightedPosition2Row = i;
+    s.highlightedPosition2Column = j;
 
     if (newPlayer == oldPlayer) {
-        highlightedPosition1Row = -1;
-        highlightedPosition1Column = -1;
+        s.highlightedPosition1Row = -1;
+        s.highlightedPosition1Column = -1;
     }
 
     boardWidget->repaint();
@@ -166,6 +141,8 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
             blackRequestThinking();
         }
     }
+
+    boardWidget->setStoneHighlightedStruct(s);
 }
 
 void Window::whiteRequestThinking()
@@ -181,6 +158,7 @@ void Window::blackRequestThinking()
         QTimer::singleShot(300, this, SLOT(blackRequestThinking()));
     }
 }
+
 
 void Window::boardWidgetCellClicked(int i, int j)
 {

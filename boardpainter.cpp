@@ -7,12 +7,11 @@
 #define CELL_POSITION_SPEC_TOP 4
 #define CELL_POSITION_SPEC_BOTTOM 8
 
-BoardPainter::BoardPainter(StonePaintData *sd): highlightedCellRow(0), highlightedCellColumn(0)
+BoardPainter::BoardPainter(): highlightedCellRow(0), highlightedCellColumn(0)
 {
-    stoneDataProvider = sd;
 }
 
-void BoardPainter::paint(QWidget *widget)
+void BoardPainter::paint(QWidget *widget, StonePaintData *stoneData)
 {
     int cellWidth = widget->width() / numOfColumns;
     int x = 0;
@@ -37,8 +36,8 @@ void BoardPainter::paint(QWidget *widget)
                 spec |= CELL_POSITION_SPEC_BOTTOM;
             }
             StonePaintData::StonePaintType stoneType = StonePaintData::None;
-            if (stoneDataProvider != NULL) {
-                stoneType = stoneDataProvider->stonePaintTypeAt(row, col);
+            if (stoneData != NULL) {
+                stoneType = stoneData->stonePaintTypeAt(row, col);
             }
             bool drawRedCross = (row == highlightedCellRow && col == highlightedCellColumn);
             paintCell(widget, x, y, cellWidth, cellHeight, spec, stoneType, drawRedCross);
@@ -53,10 +52,6 @@ void BoardPainter::setHighlightedCell(int i, int j)
 {
     highlightedCellRow = i;
     highlightedCellColumn = j;
-}
-
-void BoardPainter::setStoneData(StonePaintData *stoneData) {
-    stoneDataProvider = stoneData;
 }
 
 void BoardPainter::paintCell(QWidget *widget, int x, int y, int width, int height, int positionSpec,

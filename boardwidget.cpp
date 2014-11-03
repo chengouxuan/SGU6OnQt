@@ -39,13 +39,13 @@
 ****************************************************************************/
 
 #include "boardwidget.h"
-
+#include "globaldef.h"
 #include <QPainter>
 #include <QMouseEvent>
 //#include <QDebug>
 
 BoardWidget::BoardWidget(QWidget *parent)
-    : QWidget(parent), boardPainter(NULL)
+    : QWidget(parent), gameLogic(NULL)
 {
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -63,15 +63,10 @@ QSize BoardWidget::sizeHint() const
 }
 
 
-void BoardWidget::setStoneData(StonePaintData *stoneData)
-{
-    boardPainter.setStoneData(stoneData);
-}
-
 
 void BoardWidget::paintEvent(QPaintEvent * /* event */)
 {
-    boardPainter.paint(this);
+    boardPainter.paint(this, this);
 }
 
 void BoardWidget::mousePressEvent(QMouseEvent *event)
@@ -107,6 +102,23 @@ void BoardWidget::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
+void BoardWidget::setGameLogic(GameLogic *value)
+{
+    gameLogic = value;
+}
+
+
+BoardWidget::StoneHighlightedStruct BoardWidget::stoneHighlightedStruct() const
+{
+    return _stoneHighlightedStruct;
+}
+
+void BoardWidget::setStoneHighlightedStruct(const StoneHighlightedStruct &stoneHighlightedStruct)
+{
+    _stoneHighlightedStruct = stoneHighlightedStruct;
+}
+
+
 void BoardWidget::onClicked(const QPoint &point)
 {
     for (int i = 0; i < 19; ++i) {
@@ -135,3 +147,26 @@ bool BoardWidget::isInsideCell(int i, int j, const QPoint &point) {
     }
 }
 
+StonePaintData::StonePaintType BoardWidget::stonePaintTypeAt(int row, int column)
+{
+    CellType cellType = gameLogic->cellTypeAt(row, column);
+    const StoneHighlightedStruct &s = _stoneHighlightedStruct;
+    bool highlighted =
+            (row == s.highlightedPosition1Row && column == s.highlightedPosition1Column) ||
+            (row == s.highlightedPosition2Row && column == s.highlightedPosition2Column);
+    if (cellType == CellTypeBlack) {
+        if (highlighted) {
+            return StonePaintData::BlackHighlighted;
+        } else {
+            return StonePaintData::Black;
+        }
+    }
+    if (cellType == CellTypeWhite) {
+        if (highlighted) {
+            return StonePaintData::WhiteHighlighted;
+        } else {
+            return StonePaintData::White;
+        }
+    }
+    return StonePaintData::None;
+}

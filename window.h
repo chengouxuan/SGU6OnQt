@@ -49,7 +49,7 @@
 
 class BoardWidget;
 
-class Window : public QWidget, public StonePaintData, public AIController::BoardData
+class Window : public QWidget, public AIController::BoardData
 {
     Q_OBJECT
 
@@ -57,7 +57,6 @@ public:
 
     Window();
 
-    StonePaintType stonePaintTypeAt(int row, int column);
     CellType cellTypeAt(int row, int column);
     WhichPlayer whichPlayersTurn();
     int movesToGo();
@@ -73,11 +72,6 @@ private slots:
     void blackRequestThinking();
 
 private:
-
-    int highlightedPosition1Row;
-    int highlightedPosition1Column;
-    int highlightedPosition2Row;
-    int highlightedPosition2Column;
 
     BoardWidget *boardWidget;
 

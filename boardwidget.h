@@ -46,8 +46,10 @@
 #include <QPixmap>
 #include <QWidget>
 #include "boardpainter.h"
+#include <cstring>
+#include "gamelogic.h"
 
-class BoardWidget : public QWidget
+class BoardWidget : public QWidget, public StonePaintData
 {
     Q_OBJECT
 
@@ -60,7 +62,27 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
-    void setStoneData(StonePaintData *stoneData);
+    struct StoneHighlightedStruct {
+        int highlightedPosition1Row;
+        int highlightedPosition1Column;
+        int highlightedPosition2Row;
+        int highlightedPosition2Column;
+        StoneHighlightedStruct()
+            : highlightedPosition1Row(-1)
+            , highlightedPosition1Column(-1)
+            , highlightedPosition2Row(-1)
+            , highlightedPosition2Column(-1) {}
+        StoneHighlightedStruct(const StoneHighlightedStruct &s) {
+            memcpy(this, &s, sizeof(s));
+        }
+    };
+
+    StonePaintType stonePaintTypeAt(int row, int column);
+
+    StoneHighlightedStruct stoneHighlightedStruct() const;
+    void setStoneHighlightedStruct(const StoneHighlightedStruct &stoneHighlightedStruct);
+
+    void setGameLogic(GameLogic *value);
 
 Q_SIGNALS:
     void cellClicked(int i, int j);
@@ -74,6 +96,10 @@ protected:
 private:
     BoardPainter boardPainter;
     QPoint mouseDownPoint;
+
+    GameLogic *gameLogic;
+
+    StoneHighlightedStruct _stoneHighlightedStruct;
 
     void onClicked(const QPoint &point);
     bool isInsideCell(int i, int j, const QPoint &point);
