@@ -107,5 +107,7 @@ void MoveSearcher::test()
 
     assert(boardStruct.board[dMove.GetPoint1()._row][dMove.GetPoint1()._col] == CellTypeEmpty);
     assert(boardStruct.board[dMove.GetPoint2()._row][dMove.GetPoint2()._col] == CellTypeEmpty);
+
+    delete moveSearcher;
 }
 

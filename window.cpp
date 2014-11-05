@@ -88,7 +88,7 @@ Window::Window()
 
 
 
-void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
+void Window::onStonePlaced(WhichPlayer oldPlayer, int row, int col)
 {
     WhichPlayer newPlayer = gameLogic.whichPlayersTurn();
 
@@ -96,8 +96,8 @@ void Window::onStonePlaced(WhichPlayer oldPlayer, int i, int j)
 
     s.highlightedPosition1Row = s.highlightedPosition2Row;
     s.highlightedPosition1Column = s.highlightedPosition2Column;
-    s.highlightedPosition2Row = i;
-    s.highlightedPosition2Column = j;
+    s.highlightedPosition2Row = row;
+    s.highlightedPosition2Column = col;
 
     if (newPlayer == oldPlayer) {
         s.highlightedPosition1Row = -1;
@@ -183,17 +183,17 @@ AIController::BoardDataStruct Window::makeBoardDataStruct()
 }
 
 
-bool Window::putStone(int j, int i)
+bool Window::putStone(int row, int col)
 {
     WhichPlayer player = gameLogic.whichPlayersTurn();
-    if (0 <= i && i < RowMax && 0 <= j && j < ColumnMax) {
-        if (gameLogic.putStone(i, j)) {
-            onStonePlaced(player, i, j);
+    if (0 <= row && row < RowMax && 0 <= col && col < ColumnMax) {
+        if (gameLogic.putStone(row, col)) {
+            onStonePlaced(player, row, col);
         }
     }
 }
 
-void Window::boardWidgetCellClicked(int i, int j)
+void Window::boardWidgetCellClicked(int row, int col)
 {
     WhichPlayer player = gameLogic.whichPlayersTurn();
 
@@ -202,5 +202,5 @@ void Window::boardWidgetCellClicked(int i, int j)
         return;
     }
 
-    putStone(j, i);
+    putStone(row, col);
 }

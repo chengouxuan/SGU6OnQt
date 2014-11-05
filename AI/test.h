@@ -9,9 +9,9 @@
 inline void test()
 {
 
-    MoveSearcher::test();
-    BoardFormatter::test();
-    SearcherBridge::test();
+//    MoveSearcher::test();
+//    BoardFormatter::test();
+//    SearcherBridge::test();
 
 
 }

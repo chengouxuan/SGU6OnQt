@@ -289,8 +289,8 @@ void AIController::doWait()
             sharedMemoryStruct->requestProcessed = false;
 
 
-            Logger(threadLogPath) << "thread get result: ((" << result->r1 << ", " << result->c1 << "), ("
-                                                             << result->r2 << ", " << result->c2 << ")).\r\n";
+            Logger(threadLogPath) << "thread get result: ((" << result->r1 + 1 << ", " << (char)('A' + result->c1) << "), ("
+                                                             << result->r2 + 1 << ", " << (char)('A' + result->c2) << ")).\r\n";
 
             {
                 QMutexLocker ml(&resultMutex);

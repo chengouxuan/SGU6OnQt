@@ -62,13 +62,13 @@ public:
     int movesToGo();
 
 
-    bool putStone(int j, int i);
+    bool putStone(int row, int col);
 private:
 
-    void onStonePlaced(WhichPlayer oldPlayer, int i, int j);
+    void onStonePlaced(WhichPlayer oldPlayer, int row, int col);
 
 private slots:
-    void boardWidgetCellClicked(int i, int j);
+    void boardWidgetCellClicked(int row, int col);
     void whiteRequestThinking();
     void blackRequestThinking();
     void whiteGetThinkingResult();

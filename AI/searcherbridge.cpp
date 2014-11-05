@@ -26,6 +26,8 @@ void SearcherBridge::invokeSearch(Board board, WhichPlayer whichPlayer, int move
     c1 = dMove.GetPoint1()._col;
     r2 = dMove.GetPoint2()._row;
     c2 = dMove.GetPoint2()._col;
+
+    delete searcher;
 }
 
 void SearcherBridge::test()
@@ -40,11 +42,11 @@ void SearcherBridge::test()
         " 5 . . . . . . . . . . . . . . . . . . ." "\n"
         " 6 . . . . . . . . . . . . . . . . . . ." "\n"
         " 7 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 8 . . . . . . . . . . . . . . . . . . ." "\n"
-        " 9 . . . . . . . . . . . . . . . . . . ." "\n"
-        "10 . . . . . . . . X O . . . . . . . . ." "\n"
-        "11 . . . . . . . . X O . . . . . . . . ." "\n"
-        "12 . . . . . . . . . X . . . . . . . . ." "\n"
+        " 8 . . . . . . . . . O . . . . . . . . ." "\n"
+        " 9 . . . . . . . . O . . . . . . . . . ." "\n"
+        "10 . . . . . . . X . X . . . . . . . . ." "\n"
+        "11 . . . . . . . . X . . . . . . . . . ." "\n"
+        "12 . . . . . . . . . . . . . . . . . . ." "\n"
         "13 . . . . . . . . . . . . . . . . . . ." "\n"
         "14 . . . . . . . . . . . . . . . . . . ." "\n"
         "15 . . . . . . . . . . . . . . . . . . ." "\n"
@@ -58,7 +60,7 @@ void SearcherBridge::test()
     BoardStruct boardStruct = BoardFormatter::stringToBoard(testData);
     SearcherBridge::invokeSearch(boardStruct.board,
                                  WhitePlayer, 2,
-                                 7, 20000, 9, 5,
+                                 3, Infinity, 0, 0,
                                  r1, c1, r2, c2);
 
     std::cerr << "((" << r1 + 1 << ", " << (char)(c1 + 'A') << "),("
