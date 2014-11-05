@@ -30,7 +30,8 @@ HEADERS       = \
     logger.h \
     globaldef.h \
     AI/boardformatter.h \
-    AI/searcherbridge.h
+    AI/searcherbridge.h \
+    AI/test.h
 
 SOURCES       = main.cpp \
                 window.cpp \

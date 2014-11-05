@@ -24,9 +24,6 @@
 // ËÑË÷Àà
 class MoveSearcher {
 public:
-    static /*const*/ int _time_limit/* = 45000*/; // ms
-
-public:
 
     MoveSearcher() { }
 
@@ -39,9 +36,13 @@ public:
 private:
 
     OpeningFinder openingFinder;
+
+
+public:
+
+    static void test();
 };
 
-extern MoveSearcher gSearcher;
 
 //************************************
 // Method:    GetCell
